@@ -55,9 +55,9 @@ export function Contact() {
               <Icon name="instagram" />
               Instagram
             </ContactLink>
+            <ServiceInfo className="mt-7 border-t border-white/10 pt-6 sm:mt-8" />
           </div>
         </div>
-        <ServiceInfo className="mt-10 md:mt-14" />
       </div>
     </section>
   );

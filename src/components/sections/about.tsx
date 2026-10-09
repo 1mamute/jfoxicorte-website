@@ -1,6 +1,7 @@
 import { BrandLockup } from "@/components/site/brand-lockup";
 import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
+import { ServiceInfo } from "@/components/site/service-info";
 
 const optionLink =
   "mt-2.5 inline-flex min-h-9 min-w-0 items-center gap-2.5 text-sm font-semibold";
@@ -40,19 +41,20 @@ export function About() {
               o processo e preparar o orçamento para o seu projeto.
             </p>
           </div>
-          <div className="mt-[18px] grid grid-cols-2 items-center gap-4 sm:mt-6 @max-[550px]:grid-cols-1 @max-[550px]:gap-3">
+          <div className="mt-[18px] grid grid-cols-2 items-center gap-4 sm:mt-6 @max-[470px]:grid-cols-1 @max-[470px]:gap-3">
             <ContactLink channel="email" className={optionLink}>
               <Icon name="mail" />
               Envie seu projeto por e-mail
             </ContactLink>
             <ContactLink
               channel="whatsapp"
-              className={`${optionLink} justify-self-end @max-[550px]:justify-self-start`}
+              className={`${optionLink} justify-self-start`}
             >
               <Icon name="whatsapp" />
               Envie seu projeto por WhatsApp
             </ContactLink>
           </div>
+          <ServiceInfo className="mt-5 gap-3 border-t border-white/10 pt-5 sm:mt-6 @min-[471px]:grid-cols-2 @min-[471px]:gap-4" />
         </div>
       </div>
     </section>
