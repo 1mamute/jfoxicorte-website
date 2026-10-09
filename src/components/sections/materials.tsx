@@ -1,6 +1,4 @@
-import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
-import { buttonVariants } from "@/components/ui/button";
 import { materials } from "@/content/home";
 
 export function Materials() {
@@ -10,7 +8,7 @@ export function Materials() {
       aria-labelledby="materiais-titulo"
       className="edge-light slide bg-graphite brushed"
     >
-      <div className="container-site grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-7 md:items-stretch md:gap-[55px] lg:gap-[100px]">
+      <div className="container-site grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-7 md:gap-[55px] lg:gap-[100px]">
         <div>
           <p className="mb-[18px] eyebrow text-[#bcbcbc] md:mb-6">
             Matéria-prima
@@ -23,19 +21,12 @@ export function Materials() {
             <br />
             um bom projeto.
           </h2>
-          <p className="mt-[18px] mb-5 text-[#a9a9a9] sm:my-5 md:mt-[27px] md:mb-[29px]">
+          <p className="mt-[18px] text-[#a9a9a9] sm:mt-5 md:mt-[27px]">
             Aço carbono e inox para diferentes aplicações.
             <br />
             Converse com a gente para definir o material
             <br className="hidden md:inline" /> e o processo do seu projeto.
           </p>
-          <ContactLink
-            channel="whatsapp"
-            className={buttonVariants({ variant: "outline" })}
-          >
-            Consultar meu projeto
-            <Icon name="whatsapp" />
-          </ContactLink>
         </div>
 
         <ul aria-label="Materiais trabalhados">
