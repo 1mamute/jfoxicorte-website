@@ -23,6 +23,11 @@ export const appearance = {
    * Off keeps them in the text colour.
    */
   spark: true,
+  /**
+   * Header as a lit steel plate: highlight on its upper left, fine grain and a
+   * shadow lifting it over the page. Off leaves it flat ink.
+   */
+  plateHeader: true,
 } as const;
 
 /** Space-separated `data-finish` value set on <html>; the CSS matches each word. */
@@ -31,6 +36,7 @@ export const finish = [
   appearance.bevel && "bevel",
   appearance.sheen && "sheen",
   appearance.spark && "spark",
+  appearance.plateHeader && "plate",
 ]
   .filter(Boolean)
   .join(" ");

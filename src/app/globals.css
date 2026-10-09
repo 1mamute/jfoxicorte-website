@@ -70,6 +70,8 @@
     ),
     repeating-linear-gradient(0deg, #ffffff01 0 1px, transparent 1px 4px);
   --brushed-metal-size: auto;
+  /* Fine horizontal grain: noise stretched along x. */
+  --metal-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 320' preserveAspectRatio='none'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.003 0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.01 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --edge-light: linear-gradient(
     90deg,
     transparent,
@@ -95,8 +97,8 @@
 /* Brushed-steel finish, on when `appearance.brushedSteel` is true. Layers,
    top to bottom: a soft light falling from the upper left, the section
    darkening towards its lower edge, a diagonal sheen, and fine horizontal
-   grain (noise stretched along x). The grain tile is stretched to the full
-   width, so it never repeats sideways and shows no seams. */
+   grain. The grain tile is stretched to the full width, so it never repeats
+   sideways and shows no seams. */
 :root[data-finish~="brushed"] {
   --brushed-metal:
     radial-gradient(120% 90% at 18% 0%, #ffffff14, transparent 62%),
@@ -108,7 +110,7 @@
       #ffffff04 64%,
       transparent
     ),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 320' preserveAspectRatio='none'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.003 0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.01 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    var(--metal-grain);
   --brushed-metal-size: auto, auto, auto, 100% 320px;
 }
 
@@ -231,6 +233,24 @@
 
 @utility border-light-y {
   border-image: var(--edge-light-y) 1;
+}
+
+/* Header as a steel plate, on when `appearance.plateHeader` is true: light
+   catching its top, a soft falloff to ink, the same grain as the brushed
+   sections, and a shadow that lifts it over the page while it sticks. */
+@utility plate {
+  :root[data-finish~="plate"] & {
+    background-image:
+      radial-gradient(70% 160% at 14% 0%, #ffffff0a, transparent 70%),
+      linear-gradient(180deg, #ffffff06, transparent), var(--metal-grain);
+    background-size:
+      auto,
+      auto,
+      100% 320px;
+    box-shadow:
+      inset 0 1px 0 #ffffff0b,
+      0 12px 24px -16px #000000b3;
+  }
 }
 
 /* Machined-part card: light on the top edge, shade on the bottom one, and a

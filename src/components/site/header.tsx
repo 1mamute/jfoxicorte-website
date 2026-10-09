@@ -10,7 +10,7 @@ const iconLink =
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-ink bg-[linear-gradient(110deg,#ffffff03,transparent_60%)] border-light">
+    <header className="sticky top-0 z-40 border-b bg-ink plate bg-[linear-gradient(110deg,#ffffff03,transparent_60%)] border-light">
       <div className="container-site flex h-[calc(var(--header-h)-1px)] items-center gap-2 xs:gap-3 md:gap-4 lg:gap-[30px]">
         <a
           href="#inicio"
