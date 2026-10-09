@@ -1,5 +1,6 @@
 import { ContactLink } from "@/components/site/contact-link";
 import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
+import { ScrollRow } from "@/components/site/scroll-row";
 import { services } from "@/content/home";
 import { servicePhotos } from "@/lib/images";
 
@@ -21,17 +22,17 @@ export function Services() {
           O que fazemos
         </h2>
 
-        {/* Below 700px the cards become a swipeable row (CSS scroll snap, no JS). */}
-        <ul
+        {/* Below 700px the cards become a swipeable row (CSS scroll snap; ScrollRow adds mouse drag). */}
+        <ScrollRow
           aria-label="Serviços da JF Oxicorte"
-          className="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain motion-reduce:snap-none sm:grid sm:grid-cols-3 sm:overflow-visible lg:gap-6 [&::-webkit-scrollbar]:hidden"
+          className="flex cursor-grab snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain motion-reduce:snap-none sm:grid sm:cursor-auto sm:grid-cols-3 sm:overflow-visible lg:gap-6 [&::-webkit-scrollbar]:hidden"
         >
           {services.map((service, index) => {
             const image = photos[index];
             return (
               <li
                 key={service.title}
-                className="flex w-[min(88%,360px)] shrink-0 snap-start sm:w-auto sm:min-w-0"
+                className="flex w-[min(88%,360px)] shrink-0 snap-start last:snap-end sm:w-auto sm:min-w-0"
               >
                 <article className="group flex w-full flex-col overflow-hidden rounded-[4px] border border-white/10 bg-surface bg-[linear-gradient(135deg,#ffffff05,transparent_50%)]">
                   <div className="relative aspect-[3/2] overflow-hidden bg-surface">
@@ -90,7 +91,7 @@ export function Services() {
               </li>
             );
           })}
-        </ul>
+        </ScrollRow>
       </div>
     </section>
   );

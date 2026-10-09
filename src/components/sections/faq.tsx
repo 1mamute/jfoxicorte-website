@@ -7,7 +7,10 @@ export function Faq() {
     <section
       id="duvidas"
       aria-labelledby="duvidas-titulo"
-      className="slide bg-page brushed"
+      // The content is centered, so opening an answer moves the text above it
+      // up; scroll anchoring would follow it and pull the previous section
+      // into view.
+      className="slide bg-page brushed [overflow-anchor:none]"
     >
       <div className="container-site grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-7 md:grid-cols-[1fr_1.3fr] md:items-start md:gap-[45px] lg:gap-20">
         <div>
