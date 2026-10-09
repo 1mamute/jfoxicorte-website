@@ -2,6 +2,8 @@
 // folders in assets-src/photos/ (hero/, services/, gallery/<id>/).
 import type { GalleryInfo } from "@/content/home";
 
+import { basePath } from "@/config/site";
+
 import manifest from "./photos.generated.json";
 
 type Entry = {
@@ -23,7 +25,7 @@ const data: {
 } = manifest;
 
 function toPhoto({ name, width, height, widths, hash, blur }: Entry) {
-  const url = (w: number) => `/images/${name}.${hash}-${w}.webp`;
+  const url = (w: number) => `${basePath}/images/${name}.${hash}-${w}.webp`;
   return {
     src: url(width),
     srcSet: widths.map((w) => `${url(w)} ${w}w`).join(", "),

@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { ContactNotice } from "@/components/site/contact-notice";
 import { IconSprite } from "@/components/site/icons";
 import { finish } from "@/config/appearance";
-import { contacts, site, siteOrigin } from "@/config/site";
+import { contacts, site, siteBase, siteOrigin } from "@/config/site";
 import { services } from "@/content/home";
 
 import "./globals.css";
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, email: false, address: false },
   // Absolute URLs (canonical, og:url, og:image) need the public domain: set SITE_URL.
   ...(siteOrigin && {
-    metadataBase: new URL(siteOrigin),
+    metadataBase: new URL(`${siteBase}/`),
     alternates: { canonical: "/" },
   }),
   openGraph: {
@@ -66,9 +66,9 @@ const structuredData = {
   "@type": "LocalBusiness",
   name: site.name,
   description,
-  url: siteOrigin ? `${siteOrigin}/` : undefined,
-  image: siteOrigin ? `${siteOrigin}/og-image.jpg` : undefined,
-  logo: siteOrigin ? `${siteOrigin}/icon-512.png` : undefined,
+  url: siteOrigin ? `${siteBase}/` : undefined,
+  image: siteOrigin ? `${siteBase}/og-image.jpg` : undefined,
+  logo: siteOrigin ? `${siteBase}/icon-512.png` : undefined,
   telephone: contacts.phone ?? undefined,
   email: contacts.email ?? undefined,
   sameAs: sameAs.length > 0 ? sameAs : undefined,
