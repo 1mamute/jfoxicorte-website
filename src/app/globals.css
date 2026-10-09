@@ -251,6 +251,35 @@
   }
 }
 
+/* A reflection that sweeps across the element on hover, like light running
+   over polished steel; on when `appearance.sheen` is true. It only plays
+   forwards: leaving the element snaps it back without a reverse sweep. */
+@utility sheen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  @media (hover: hover) {
+    :root[data-finish~="sheen"] &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 21;
+      pointer-events: none;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        #ffffff1f 50%,
+        transparent 70%
+      );
+      translate: -100% 0;
+    }
+    :root[data-finish~="sheen"] &:hover::before {
+      translate: 100% 0;
+      transition: translate 5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+
 @utility eyebrow {
   font-size: 0.75rem;
   font-weight: 600;

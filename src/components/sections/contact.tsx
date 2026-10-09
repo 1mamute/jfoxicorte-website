@@ -35,7 +35,7 @@ export function Contact() {
               channel="whatsapp"
               className={cn(
                 buttonVariants(),
-                "w-full justify-start px-[18px] whitespace-nowrap xs:px-[23px]",
+                "sheen w-full justify-start px-[18px] whitespace-nowrap xs:px-[23px]",
               )}
             >
               <Icon name="whatsapp" />

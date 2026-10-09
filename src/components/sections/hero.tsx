@@ -5,6 +5,7 @@ import { Icon } from "@/components/site/icons";
 import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
 import { buttonVariants } from "@/components/ui/button";
 import { heroPhoto as heroImage } from "@/lib/images";
+import { cn } from "@/lib/utils";
 
 const heroSizes = "100vw";
 
@@ -62,7 +63,10 @@ export function Hero() {
           <br />A solução sob medida para a sua próxima peça.
         </p>
         <div className="flex flex-col items-start gap-[21px] xs:flex-row xs:flex-wrap xs:items-center xs:gap-5 lg:gap-[30px]">
-          <ContactLink channel="whatsapp" className={buttonVariants()}>
+          <ContactLink
+            channel="whatsapp"
+            className={cn(buttonVariants(), "sheen")}
+          >
             <Icon name="whatsapp" />
             Vamos falar do seu projeto
           </ContactLink>
