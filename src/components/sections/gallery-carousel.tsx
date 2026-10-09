@@ -225,7 +225,7 @@ export function GalleryCarousel({
       aria-roledescription="carrossel"
       aria-label={`Fotos de ${gallery.title}`}
       className={cn(
-        "relative isolate min-w-0 overflow-hidden bg-[#242424] text-white",
+        "bevel min-w-0 overflow-hidden bg-[#242424] text-white",
         className,
       )}
     >

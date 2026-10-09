@@ -8,4 +8,17 @@ export const appearance = {
    * lower edge and fine horizontal grain. Off falls back to the subtle sheen.
    */
   brushedSteel: true,
+  /**
+   * Machined-part cards (services, project photos): lit top edge, shaded
+   * bottom edge and a soft drop shadow. Off leaves them flat.
+   */
+  bevel: true,
 } as const;
+
+/** Space-separated `data-finish` value set on <html>; the CSS matches each word. */
+export const finish = [
+  appearance.brushedSteel && "brushed",
+  appearance.bevel && "bevel",
+]
+  .filter(Boolean)
+  .join(" ");

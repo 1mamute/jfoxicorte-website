@@ -97,7 +97,7 @@
    darkening towards its lower edge, a diagonal sheen, and fine horizontal
    grain (noise stretched along x). The grain tile is stretched to the full
    width, so it never repeats sideways and shows no seams. */
-:root[data-finish="brushed"] {
+:root[data-finish~="brushed"] {
   --brushed-metal:
     radial-gradient(120% 90% at 18% 0%, #ffffff14, transparent 62%),
     linear-gradient(180deg, transparent 55%, #00000038),
@@ -223,6 +223,32 @@
 
 @utility border-light-y {
   border-image: var(--edge-light-y) 1;
+}
+
+/* Machined-part card: light on the top edge, shade on the bottom one, and a
+   soft drop shadow, on when `appearance.bevel` is true. The edges are drawn
+   on an overlay so photos at the top of the card don't cover them. */
+@utility bevel {
+  position: relative;
+  isolation: isolate;
+  :root[data-finish~="bevel"] & {
+    box-shadow:
+      0 16px 32px -18px #000000d9,
+      0 2px 4px -2px #00000059;
+  }
+  :root[data-finish~="bevel"] &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 1px 0 #ffffff33,
+      inset 0 -1px 0 #00000080,
+      inset 1px 0 0 #ffffff0d,
+      inset -1px 0 0 #ffffff0d;
+  }
 }
 
 @utility eyebrow {

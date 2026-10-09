@@ -34,7 +34,7 @@ export function Services() {
                 key={service.title}
                 className="flex w-[min(88%,360px)] shrink-0 max-sm:snap-start max-sm:last:snap-end sm:w-auto sm:min-w-0"
               >
-                <article className="group flex w-full flex-col overflow-hidden rounded-[4px] border border-white/10 bg-surface bg-[linear-gradient(135deg,#ffffff05,transparent_50%)]">
+                <article className="group bevel flex w-full flex-col overflow-hidden rounded-[4px] border border-white/10 bg-surface bg-[linear-gradient(135deg,#ffffff05,transparent_50%)]">
                   {/* On short screens the photo gives up height (the card text
                       needs ~390px) so the section still fits one slide. */}
                   <div className="relative aspect-[3/2] max-h-[max(130px,calc(var(--slide-h)-2*var(--section-py)-390px))] overflow-hidden bg-surface">

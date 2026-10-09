@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { ContactNotice } from "@/components/site/contact-notice";
 import { IconSprite } from "@/components/site/icons";
-import { appearance } from "@/config/appearance";
+import { finish } from "@/config/appearance";
 import { contacts, site, siteOrigin } from "@/config/site";
 import { services } from "@/content/home";
 
@@ -107,7 +107,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="pt-BR"
       className={brandFont.variable}
-      data-finish={appearance.brushedSteel ? "brushed" : undefined}
+      data-finish={finish || undefined}
     >
       <body>
         <a
