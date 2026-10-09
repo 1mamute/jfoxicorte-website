@@ -1,7 +1,7 @@
 import { About } from "@/components/sections/about";
 import { Contact } from "@/components/sections/contact";
 import { Faq } from "@/components/sections/faq";
-import { Hero, Specialties } from "@/components/sections/hero";
+import { Hero } from "@/components/sections/hero";
 import { Materials } from "@/components/sections/materials";
 import { Projects } from "@/components/sections/projects";
 import { Services } from "@/components/sections/services";
@@ -17,7 +17,6 @@ export default function Home() {
       <Header />
       <main id="principal" tabIndex={-1} className="outline-none">
         <Hero />
-        <Specialties />
         <About />
         <Services />
         <Materials />

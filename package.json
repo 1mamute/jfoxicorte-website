@@ -9,6 +9,7 @@
     "dev": "node scripts/dev.mjs",
     "prebuild": "npm run images",
     "build": "next build",
+    "prepreview": "npm run build",
     "preview": "serve out",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",

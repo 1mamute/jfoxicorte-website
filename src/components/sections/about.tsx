@@ -16,7 +16,7 @@ export function About() {
         <div className="flex justify-center">
           <BrandLockup
             tagline
-            className="w-[min(100%,290px)] gap-2 sm:w-[min(100%,340px)] sm:gap-3"
+            className="w-[min(100%,290px,30svh)] gap-2 sm:w-[min(100%,340px)] sm:gap-3"
           />
         </div>
 

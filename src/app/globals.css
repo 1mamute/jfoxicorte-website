@@ -87,7 +87,16 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
+  /* Vertical slideshow: every scroll gesture settles on a section. Sections
+     taller than the screen still scroll freely inside (CSS snap allows it). */
   @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-snap-type: y mandatory;
+    }
+  }
+  /* Too short for one section per screen (phones in landscape): snapping
+     would fight every scroll, so it only helps near a section start. */
+  @media (prefers-reduced-motion: no-preference) and (max-height: 499px) {
     html {
       scroll-snap-type: y proximity;
     }
@@ -159,6 +168,8 @@
   min-height: var(--slide-h);
   padding-block: var(--section-py);
   scroll-snap-align: start;
+  /* A fast swipe moves one section at a time instead of skipping several. */
+  scroll-snap-stop: always;
 }
 
 @utility brushed {

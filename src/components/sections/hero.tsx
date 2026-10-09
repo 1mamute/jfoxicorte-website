@@ -21,7 +21,8 @@ export function Hero() {
     <section
       id="inicio"
       aria-labelledby="inicio-titulo"
-      className="relative isolate flex min-h-(--slide-h) snap-start overflow-hidden bg-[#151515] text-white"
+      // The specialties strip sits at the bottom of the hero so both fill one slide.
+      className="relative isolate flex min-h-(--slide-h) snap-start snap-always flex-col overflow-hidden bg-[#151515] text-white"
     >
       <PhotoPlaceholder
         image={heroImage}
@@ -43,10 +44,10 @@ export function Hero() {
         className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#151515e8,#15151570),linear-gradient(0deg,#151515,transparent_70%)] md:bg-[linear-gradient(90deg,#151515_0%,#151515e6_26%,#15151566_62%,#15151510),linear-gradient(0deg,#151515a6,transparent_40%)]"
       />
 
-      <div className="container-site flex flex-col items-start justify-center py-(--section-py)">
+      <div className="container-site flex flex-1 flex-col items-start justify-center py-(--section-py)">
         <h1
           id="inicio-titulo"
-          className="text-[clamp(3rem,min(14.5vw,11vh),3.75rem)] leading-[.98] xs:text-[clamp(3.1rem,min(10vw,11vh),5.2rem)] md:text-[clamp(3.15rem,min(6.5vw,10.4svh),6.1rem)]"
+          className="text-[clamp(2.75rem,min(14.5vw,8svh),3.75rem)] leading-[.98] xs:text-[clamp(3.1rem,min(10vw,11vh),5.2rem)] md:text-[clamp(3.15rem,min(6.5vw,10.4svh),6.1rem)]"
         >
           Seu projeto
           <br />
@@ -76,6 +77,8 @@ export function Hero() {
           </a>
         </div>
       </div>
+
+      <Specialties />
     </section>
   );
 }
@@ -86,7 +89,7 @@ const specialties = [
   { icon: "ruler", label: "Do desenho à peça" },
 ] as const;
 
-export function Specialties() {
+function Specialties() {
   return (
     <div className="border-t border-white/10 bg-strip text-[#c4c4c4]">
       <ul className="container-site grid grid-cols-3 gap-[7px] py-[22px] xs:gap-5 md:gap-0 md:py-[27px]">

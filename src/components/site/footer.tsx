@@ -36,7 +36,9 @@ const infoText = "text-sm leading-[1.6] whitespace-pre-line text-[#aeb3b8]";
 
 export function Footer() {
   return (
-    <footer className="bg-ink brushed">
+    // Snap point for the page end: with mandatory snapping the footer would
+    // otherwise be unreachable below the last section.
+    <footer className="snap-end bg-ink brushed">
       <div className="container-site grid gap-[25px] border-b border-white/10 py-[30px] xs:grid-cols-2 xs:gap-x-6 xs:gap-y-7 xs:py-8 md:grid-cols-3 md:gap-7 md:py-[38px]">
         <InfoItem icon="pin" title="Região de atendimento">
           <p className={infoText}>
