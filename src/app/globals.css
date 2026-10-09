@@ -1,115 +1,387 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* Breakpoints follow the approved design (mobile-first, min-width). */
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-xs: 30.0625rem; /* 481px */
+  --breakpoint-sm: 43.75rem; /* 700px */
+  --breakpoint-md: 50.0625rem; /* 801px: desktop navigation */
+  --breakpoint-lg: 68.8125rem; /* 1101px */
+  --breakpoint-xl: 100rem; /* 1600px */
+
+  --color-ink: #090a0b; /* header, footer */
+  --color-page: #101112; /* about, faq */
+  --color-steel: #17191b; /* services, projects */
+  --color-graphite: #202224; /* materials */
+  --color-night: #0c0d0e; /* contact */
+  --color-surface: #232527; /* cards */
+  --color-strip: #1c1c1c; /* specialties strip */
+  --color-soft: #c2c5c8; /* secondary body text */
+
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-brand: var(--font-jf-brand), Arial, sans-serif;
+
+  /* Small text keeps the body line-height, as in the approved design. */
+  --text-xs--line-height: 1.6;
+  --text-sm--line-height: 1.6;
+  --text-base--line-height: 1.6;
+
+  --container-site: 77.5rem; /* 1240px */
+}
+
+/* Short landscape viewports (phones on their side). */
+@custom-variant short (@media (max-height: 31.25rem) and (orientation: landscape));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
+  --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: Arial, Helvetica, sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* The site has a single dark theme; shadcn tokens map onto its palette. */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: var(--primary);
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: var(--secondary);
-  --accent-foreground: var(--primary);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: var(--border);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--ring);
+  color-scheme: dark;
+  --background: #101112;
+  --foreground: #f0f0f0;
+  --popover: #343638;
+  --popover-foreground: #f0f0f0;
+  --muted-foreground: #b8bbc0;
+  --accent: #2e3134; /* skeletons */
+  --border: #ffffff26;
+  --ring: #8c8c8c;
+
+  --header-h: 79px; /* includes the 1px bottom border */
+  /* One "slide" = viewport minus the sticky header. svh avoids layout jumps
+     while mobile browser toolbars collapse. */
+  --slide-h: calc(100vh - var(--header-h));
+  --section-py: clamp(28px, 4.5vh, 64px);
+  /* Subtle default finish; `appearance.brushedSteel` swaps in the stronger
+     one below. */
+  --brushed-metal:
+    linear-gradient(
+      115deg,
+      #ffffff04,
+      transparent 38%,
+      #ffffff02 64%,
+      transparent
+    ),
+    repeating-linear-gradient(0deg, #ffffff01 0 1px, transparent 1px 4px);
+  --brushed-metal-size: auto;
+  /* Fine horizontal grain: noise stretched along x. */
+  --metal-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 320' preserveAspectRatio='none'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.003 0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.01 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --edge-light: linear-gradient(
+    90deg,
+    transparent,
+    #ffffff1a 20%,
+    #ffffff52 50%,
+    #ffffff1a 80%,
+    transparent
+  );
+  --edge-light-y: linear-gradient(180deg, transparent, #ffffff40, transparent);
+
+  @supports (height: 100svh) {
+    --slide-h: calc(100svh - var(--header-h));
+    --section-py: clamp(28px, 4.5svh, 64px);
+  }
+  @variant xs {
+    --header-h: 83px;
+  }
+  @variant md {
+    --header-h: 105px;
+  }
+  /* Phones in landscape: a tall header would eat a quarter of the screen. */
+  @variant short {
+    --header-h: 72px;
+  }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: var(--foreground);
-  --popover: var(--card);
-  --popover-foreground: var(--foreground);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: var(--foreground);
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: var(--secondary);
-  --accent-foreground: var(--foreground);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: var(--card);
-  --sidebar-primary: var(--chart-1);
+/* Brushed-steel finish, on when `appearance.brushedSteel` is true. Layers,
+   top to bottom: a soft light falling from the upper left, the section
+   darkening towards its lower edge, a diagonal sheen, and fine horizontal
+   grain. The grain tile is stretched to the full width, so it never repeats
+   sideways and shows no seams. */
+:root[data-finish~="brushed"] {
+  --brushed-metal:
+    radial-gradient(120% 90% at 18% 0%, #ffffff14, transparent 62%),
+    linear-gradient(180deg, transparent 55%, #00000038),
+    linear-gradient(
+      115deg,
+      #ffffff06,
+      transparent 38%,
+      #ffffff04 64%,
+      transparent
+    ),
+    var(--metal-grain);
+  --brushed-metal-size: auto, auto, auto, 100% 320px;
+}
+
+/* Spark accent, on when `appearance.spark` is true: the only warm colour on
+   the site, like the glow where the laser meets the steel. Used only on hover
+   lines (menu and text links); without it they stay currentColor. */
+:root[data-finish~="spark"] {
+  --spark: #ff8a3d;
+  --spark-glow: #ff8a3d80;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  html {
+    scroll-padding-top: var(--header-h);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* Gentle slideshow: scrolling stays free, and only when a scroll ends near
+     a section start does the page settle onto that section. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-snap-type: y proximity;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   body {
-    @apply bg-background font-sans text-foreground antialiased;
+    @apply bg-background font-sans text-base leading-[1.6] text-foreground antialiased;
   }
+  h1,
+  h2,
+  h3 {
+    @apply leading-[1.07] font-semibold tracking-[-0.055em];
+  }
+  h3 {
+    @apply tracking-[-0.04em];
+  }
+  /* No lone words on the last line of headings or paragraphs. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    @apply text-muted-foreground;
+    text-wrap: pretty;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+  ::selection {
+    background: #f0f0f0;
+    color: #101112;
+  }
+}
+
+@utility container-site {
+  width: calc(100% - 36px);
+  max-width: var(--container-site);
+  margin-inline: auto;
+  @variant xs {
+    width: calc(100% - 40px);
+  }
+  @variant md {
+    width: calc(100% - 64px);
+  }
+  @variant lg {
+    width: calc(100% - 104px);
+  }
+}
+
+/* Full-viewport section used by every content block (snap target). */
+@utility slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--slide-h);
+  padding-block: var(--section-py);
+  scroll-snap-align: start;
+}
+
+@utility brushed {
+  background-image: var(--brushed-metal);
+  background-size: var(--brushed-metal-size);
+  box-shadow: inset 0 1px 0 #ffffff0b;
+}
+
+/* Edges that catch the light like the rim of a steel plate: a hairline that
+   brightens in the middle and fades out at both ends. */
+@utility edge-light {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: var(--edge-light);
+    pointer-events: none;
+  }
+}
+
+/* Same light on an element's existing border (keeps its size and layout). */
+@utility border-light {
+  border-image: var(--edge-light) 1;
+}
+
+@utility border-light-y {
+  border-image: var(--edge-light-y) 1;
+}
+
+/* Header as a steel plate, on when `appearance.plateHeader` is true: light
+   catching its top, a soft falloff to ink, the same grain as the brushed
+   sections, and a shadow that lifts it over the page while it sticks. */
+@utility plate {
+  :root[data-finish~="plate"] & {
+    background-image:
+      radial-gradient(70% 160% at 14% 0%, #ffffff0a, transparent 70%),
+      linear-gradient(180deg, #ffffff06, transparent), var(--metal-grain);
+    background-size:
+      auto,
+      auto,
+      100% 320px;
+    box-shadow:
+      inset 0 1px 0 #ffffff0b,
+      0 12px 24px -16px #000000b3;
+  }
+}
+
+/* Machined-part card: light on the top edge, shade on the bottom one, and a
+   soft drop shadow, on when `appearance.bevel` is true. The edges are drawn
+   on an overlay so photos at the top of the card don't cover them. */
+@utility bevel {
+  position: relative;
+  isolation: isolate;
+  :root[data-finish~="bevel"] & {
+    box-shadow:
+      0 16px 32px -18px #000000d9,
+      0 2px 4px -2px #00000059;
+  }
+  :root[data-finish~="bevel"] &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 1px 0 #ffffff33,
+      inset 0 -1px 0 #00000080,
+      inset 1px 0 0 #ffffff0d,
+      inset -1px 0 0 #ffffff0d;
+  }
+}
+
+/* A reflection that sweeps across the element on hover, like light running
+   over polished steel; on when `appearance.sheen` is true. It only plays
+   forwards: leaving the element snaps it back without a reverse sweep. */
+@utility sheen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  @media (hover: hover) {
+    :root[data-finish~="sheen"] &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 21;
+      pointer-events: none;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        #ffffff1f 50%,
+        transparent 70%
+      );
+      translate: -100% 0;
+    }
+    :root[data-finish~="sheen"] &:hover::before {
+      translate: 100% 0;
+      transition: translate 5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+
+/* Floating shortcut that fades in once the hero has scrolled past. JS sets
+   `data-shown`; without scripting it is always visible. Hidden means
+   `visibility: hidden`, so it also leaves the tab order. */
+@utility dock-reveal {
+  transition:
+    opacity 0.25s,
+    translate 0.25s,
+    visibility 0.25s;
+  @media (scripting: enabled) {
+    &:not([data-shown]) {
+      opacity: 0;
+      translate: 0 12px;
+      visibility: hidden;
+    }
+  }
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@utility text-section {
+  font-size: clamp(2rem, 4.2vw, 3.6rem);
+}
+
+/* Text link with a short trailing line that grows on hover. */
+@utility link-line {
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  /* items-center lands it on cap-height middle; nudge to x-height middle. */
+  translate: 0 1px;
+  background: currentColor;
+  transition:
+    width 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
+  a:hover > & {
+    width: 30px;
+    background: var(--spark, currentColor);
+    box-shadow: 0 0 6px var(--spark-glow, transparent);
+  }
+}
+
+/* Native <details> accordion: animates height where supported. */
+@utility faq-item {
+  &::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      content-visibility 0.32s allow-discrete;
+  }
+  &[open]::details-content {
+    block-size: auto;
+  }
+  interpolate-size: allow-keywords;
 }

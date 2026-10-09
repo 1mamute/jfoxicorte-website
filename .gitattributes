@@ -1,0 +1,26 @@
+# Normalize text files to LF in the repo and the working tree, regardless of
+# the user's core.autocrlf setting.
+* text=auto eol=lf
+
+# Windows-only scripts need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.svg text
+*.ttf binary
+*.otf binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
+*.glb binary
+*.res binary
+*.scn binary
+*.dll binary
+*.so binary
+*.dylib binary
