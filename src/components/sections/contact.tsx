@@ -1,5 +1,6 @@
 import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
+import { ServiceInfo } from "@/components/site/service-info";
 import { buttonVariants } from "@/components/ui/button";
 import { contacts, EMAIL_PLACEHOLDER } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ export function Contact() {
             </ContactLink>
           </div>
         </div>
+        <ServiceInfo className="mt-10 md:mt-14" />
       </div>
     </section>
   );
