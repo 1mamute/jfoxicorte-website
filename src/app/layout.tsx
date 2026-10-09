@@ -68,6 +68,7 @@ const structuredData = {
   description,
   url: siteOrigin ? `${siteOrigin}/` : undefined,
   image: siteOrigin ? `${siteOrigin}/og-image.jpg` : undefined,
+  logo: siteOrigin ? `${siteOrigin}/icon-512.png` : undefined,
   telephone: contacts.phone ?? undefined,
   email: contacts.email ?? undefined,
   sameAs: sameAs.length > 0 ? sameAs : undefined,
@@ -80,7 +81,8 @@ const structuredData = {
           addressCountry: "BR",
         }
       : undefined,
-  areaServed: site.serviceRegion || undefined,
+  // `serviceRegion` is display copy; the structured value names the city.
+  areaServed: site.city ? { "@type": "City", name: site.city } : undefined,
   knowsAbout: [
     "Corte a laser",
     "Oxicorte",

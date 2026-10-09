@@ -30,6 +30,9 @@
   --container-site: 77.5rem; /* 1240px */
 }
 
+/* Short landscape viewports (phones on their side). */
+@custom-variant short (@media (max-height: 31.25rem) and (orientation: landscape));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -91,6 +94,10 @@
   }
   @variant md {
     --header-h: 105px;
+  }
+  /* Phones in landscape: a tall header would eat a quarter of the screen. */
+  @variant short {
+    --header-h: 72px;
   }
 }
 
@@ -159,8 +166,15 @@
   h3 {
     @apply tracking-[-0.04em];
   }
+  /* No lone words on the last line of headings or paragraphs. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
   p {
     @apply text-muted-foreground;
+    text-wrap: pretty;
   }
   a,
   button {
@@ -304,6 +318,23 @@
     :root[data-finish~="sheen"] &:hover::before {
       translate: 100% 0;
       transition: translate 5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+
+/* Floating shortcut that fades in once the hero has scrolled past. JS sets
+   `data-shown`; without scripting it is always visible. Hidden means
+   `visibility: hidden`, so it also leaves the tab order. */
+@utility dock-reveal {
+  transition:
+    opacity 0.25s,
+    translate 0.25s,
+    visibility 0.25s;
+  @media (scripting: enabled) {
+    &:not([data-shown]) {
+      opacity: 0;
+      translate: 0 12px;
+      visibility: hidden;
     }
   }
 }

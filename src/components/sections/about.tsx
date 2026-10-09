@@ -27,8 +27,7 @@ export function About() {
             id="empresa-titulo"
             className="mb-[18px] text-[2rem] md:mb-[25px] md:text-section"
           >
-            A sua ideia.
-            <br />O nosso próximo corte.
+            A sua ideia. <span className="block">O nosso próximo corte.</span>
           </h2>
           <div className="space-y-3.5 leading-[1.55] sm:space-y-[15px] md:space-y-[18px]">
             <p>

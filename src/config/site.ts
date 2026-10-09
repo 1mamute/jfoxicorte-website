@@ -22,7 +22,8 @@ export const site = {
   city: "Piracicaba",
   state: "SP",
   /** Real service area. Shown in the footer when filled. */
-  serviceRegion: "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
+  serviceRegion:
+    "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
   /** Real opening hours; line breaks are preserved. */
   businessHours: "08:00 às 17:00",
 } as const;

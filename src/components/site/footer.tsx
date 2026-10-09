@@ -19,7 +19,7 @@ export function Footer() {
         </p>
         <a
           href="#inicio"
-          className="inline-flex items-center gap-1.5 justify-self-end text-xs leading-normal whitespace-nowrap text-muted-foreground hover:text-foreground"
+          className="inline-flex min-h-6 items-center gap-1.5 justify-self-end text-xs leading-normal whitespace-nowrap text-muted-foreground hover:text-foreground"
         >
           Voltar ao início <span aria-hidden="true">↑</span>
         </a>

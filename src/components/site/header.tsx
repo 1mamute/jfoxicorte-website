@@ -14,7 +14,7 @@ export function Header() {
       <div className="container-site flex h-[calc(var(--header-h)-1px)] items-center gap-2 xs:gap-3 md:gap-4 lg:gap-[30px]">
         <a
           href="#inicio"
-          className="w-24 shrink-0 text-foreground min-[361px]:w-[106px] xs:w-[119px] md:w-[145px]"
+          className="w-24 shrink-0 text-foreground min-[361px]:w-[106px] xs:w-[119px] md:w-[145px] short:w-24"
           aria-label="JF Oxicorte — início"
         >
           <BrandLockup />
