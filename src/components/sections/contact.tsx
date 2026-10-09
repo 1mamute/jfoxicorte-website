@@ -10,7 +10,7 @@ export function Contact() {
     <section
       id="contato"
       aria-labelledby="contato-titulo"
-      className="slide bg-night"
+      className="edge-light slide bg-night"
     >
       <div className="container-site">
         <p className="mb-[18px] eyebrow text-[#bcbcbc] md:mb-6">

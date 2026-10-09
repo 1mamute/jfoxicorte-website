@@ -67,6 +67,15 @@
       transparent
     ),
     repeating-linear-gradient(0deg, #ffffff01 0 1px, transparent 1px 4px);
+  --edge-light: linear-gradient(
+    90deg,
+    transparent,
+    #ffffff1a 20%,
+    #ffffff52 50%,
+    #ffffff1a 80%,
+    transparent
+  );
+  --edge-light-y: linear-gradient(180deg, transparent, #ffffff40, transparent);
 
   @supports (height: 100svh) {
     --slide-h: calc(100svh - var(--header-h));
@@ -87,16 +96,9 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
-  /* Vertical slideshow: every scroll gesture settles on a section. Sections
-     taller than the screen still scroll freely inside (CSS snap allows it). */
+  /* Gentle slideshow: scrolling stays free, and only when a scroll ends near
+     a section start does the page settle onto that section. */
   @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-snap-type: y mandatory;
-    }
-  }
-  /* Too short for one section per screen (phones in landscape): snapping
-     would fight every scroll, so it only helps near a section start. */
-  @media (prefers-reduced-motion: no-preference) and (max-height: 499px) {
     html {
       scroll-snap-type: y proximity;
     }
@@ -168,13 +170,35 @@
   min-height: var(--slide-h);
   padding-block: var(--section-py);
   scroll-snap-align: start;
-  /* A fast swipe moves one section at a time instead of skipping several. */
-  scroll-snap-stop: always;
 }
 
 @utility brushed {
   background-image: var(--brushed-metal);
   box-shadow: inset 0 1px 0 #ffffff0b;
+}
+
+/* Edges that catch the light like the rim of a steel plate: a hairline that
+   brightens in the middle and fades out at both ends. */
+@utility edge-light {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: var(--edge-light);
+    pointer-events: none;
+  }
+}
+
+/* Same light on an element's existing border (keeps its size and layout). */
+@utility border-light {
+  border-image: var(--edge-light) 1;
+}
+
+@utility border-light-y {
+  border-image: var(--edge-light-y) 1;
 }
 
 @utility eyebrow {

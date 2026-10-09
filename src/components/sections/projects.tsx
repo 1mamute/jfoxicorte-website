@@ -12,7 +12,7 @@ export function Projects() {
     <section
       id="projetos"
       aria-labelledby="projetos-titulo"
-      className="slide bg-steel brushed"
+      className="edge-light slide bg-steel brushed"
     >
       <div className="container-site">
         <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-[45px] md:items-center">

@@ -12,7 +12,7 @@ export function Services() {
     <section
       id="servicos"
       aria-labelledby="servicos-titulo"
-      className="slide bg-steel brushed"
+      className="edge-light slide bg-steel brushed"
     >
       <div className="container-site">
         <h2

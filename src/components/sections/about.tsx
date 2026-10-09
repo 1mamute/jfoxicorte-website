@@ -11,7 +11,7 @@ export function About() {
     <section
       id="empresa"
       aria-labelledby="empresa-titulo"
-      className="slide bg-page brushed"
+      className="edge-light slide bg-page brushed"
     >
       <div className="container-site grid items-center gap-[26px] sm:grid-cols-2 sm:gap-7 md:gap-[55px] lg:gap-[100px]">
         <div className="flex justify-center">

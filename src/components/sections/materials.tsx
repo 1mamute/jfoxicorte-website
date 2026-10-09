@@ -8,7 +8,7 @@ export function Materials() {
     <section
       id="materiais"
       aria-labelledby="materiais-titulo"
-      className="slide bg-graphite brushed"
+      className="edge-light slide bg-graphite brushed"
     >
       <div className="container-site grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-7 md:items-stretch md:gap-[55px] lg:gap-[100px]">
         <div>

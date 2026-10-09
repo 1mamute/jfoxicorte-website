@@ -22,7 +22,7 @@ export function Hero() {
       id="inicio"
       aria-labelledby="inicio-titulo"
       // The specialties strip sits at the bottom of the hero so both fill one slide.
-      className="relative isolate flex min-h-(--slide-h) snap-start snap-always flex-col overflow-hidden bg-[#151515] text-white"
+      className="relative isolate flex min-h-(--slide-h) snap-start flex-col overflow-hidden bg-[#151515] text-white"
     >
       <PhotoPlaceholder
         image={heroImage}
@@ -91,12 +91,12 @@ const specialties = [
 
 function Specialties() {
   return (
-    <div className="border-t border-white/10 bg-strip text-[#c4c4c4]">
+    <div className="border-t bg-strip text-[#c4c4c4] border-light">
       <ul className="container-site grid grid-cols-3 gap-[7px] py-[22px] xs:gap-5 md:gap-0 md:py-[27px]">
         {specialties.map((item) => (
           <li
             key={item.label}
-            className="flex flex-col items-center justify-center gap-[9px] border-white/15 pr-1.5 text-center text-[0.6875rem] not-last:border-r xs:pr-0 xs:text-[0.75rem] md:flex-row md:gap-4 md:text-[0.875rem] md:first:justify-start md:last:justify-end"
+            className="flex flex-col items-center justify-center gap-[9px] pr-1.5 text-center text-[0.6875rem] border-light-y not-last:border-r xs:pr-0 xs:text-[0.75rem] md:flex-row md:gap-4 md:text-[0.875rem] md:first:justify-start md:last:justify-end"
           >
             <Icon
               name={item.icon}

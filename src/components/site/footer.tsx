@@ -3,9 +3,9 @@ import { CurrentYear } from "./current-year";
 
 export function Footer() {
   return (
-    // Snap point for the page end: with mandatory snapping the footer would
-    // otherwise be unreachable below the last section.
-    <footer className="snap-end bg-ink brushed">
+    // Snap point for the page end, so a scroll that stops near the bottom
+    // settles with the footer fully in view.
+    <footer className="edge-light snap-end bg-ink brushed">
       <div className="container-site grid grid-cols-[clamp(80px,23vw,110px)_minmax(0,1fr)_auto] items-center gap-2 py-[22px] min-[601px]:gap-5 min-[601px]:py-6 xs:grid-cols-[120px_minmax(0,1fr)_auto] xs:gap-3">
         <a
           href="#inicio"
