@@ -18,6 +18,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Gallery, GallerySlide } from "@/content/home";
 import { photo } from "@/lib/images";
 import { cn } from "@/lib/utils";
@@ -159,20 +160,34 @@ function Lightbox({
                 aria-roledescription="foto"
                 aria-label={`${i + 1} de ${count}`}
                 inert={i !== index}
-                className="flex h-full min-w-0 flex-[0_0_100%] items-center justify-center overflow-hidden"
+                className="[container-type:size] flex h-full min-w-0 flex-[0_0_100%] items-center justify-center overflow-hidden"
                 style={slideStyle(item)}
               >
-                <img
-                  src={image.src}
-                  srcSet={image.srcSet}
-                  sizes="min(1100px, 100vw)"
-                  width={image.width}
-                  height={image.height}
-                  alt={item.alt}
-                  draggable={false}
-                  decoding="async"
-                  className="size-full [scale:var(--zoom)] object-contain object-(--pos) select-none"
-                />
+                {/* Box with the photo's aspect ratio, fitted inside the slide
+                    (like object-contain), so the skeleton matches the photo. */}
+                <div
+                  className="relative origin-(--pos) [scale:var(--zoom)]"
+                  style={{
+                    aspectRatio: `${image.width} / ${image.height}`,
+                    width: `min(100cqw, ${image.width / image.height} * 100cqh)`,
+                  }}
+                >
+                  <Skeleton
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-none"
+                  />
+                  <img
+                    src={image.src}
+                    srcSet={image.srcSet}
+                    sizes="min(1100px, 100vw)"
+                    width={image.width}
+                    height={image.height}
+                    alt={item.alt}
+                    draggable={false}
+                    decoding="async"
+                    className="relative size-full object-cover select-none"
+                  />
+                </div>
               </div>
             );
           })}
@@ -254,6 +269,10 @@ export function GalleryCarousel({
                     setLightboxOpen(true);
                   }}
                 >
+                  <Skeleton
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-none"
+                  />
                   <img
                     src={image.src}
                     srcSet={image.srcSet}
@@ -264,7 +283,7 @@ export function GalleryCarousel({
                     loading="lazy"
                     decoding="async"
                     draggable={false}
-                    className="size-full [scale:var(--zoom)] object-cover object-(--pos) transition-[scale] duration-500 select-none group-hover/photo:[scale:calc(var(--zoom)+.035)]"
+                    className="relative size-full [scale:var(--zoom)] object-cover object-(--pos) transition-[scale] duration-500 select-none group-hover/photo:[scale:calc(var(--zoom)+.035)]"
                   />
                 </button>
               </div>

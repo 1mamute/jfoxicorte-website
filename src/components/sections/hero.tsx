@@ -3,6 +3,7 @@ import { preload } from "react-dom";
 import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { photo } from "@/lib/images";
 
 const heroImage = photo("laser");
@@ -23,6 +24,11 @@ export function Hero() {
       aria-labelledby="inicio-titulo"
       className="relative isolate flex min-h-(--slide-h) snap-start overflow-hidden bg-[#151515] text-white"
     >
+      {/* Shows until the (opaque) photo paints over it. */}
+      <Skeleton
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 rounded-none"
+      />
       <img
         src={heroImage.src}
         srcSet={heroImage.srcSet}

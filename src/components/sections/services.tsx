@@ -1,4 +1,5 @@
 import { ContactLink } from "@/components/site/contact-link";
+import { Skeleton } from "@/components/ui/skeleton";
 import { services } from "@/content/home";
 import { photo } from "@/lib/images";
 
@@ -31,6 +32,11 @@ export function Services() {
               >
                 <article className="group flex w-full flex-col overflow-hidden rounded-[4px] border border-white/10 bg-surface bg-[linear-gradient(135deg,#ffffff05,transparent_50%)]">
                   <div className="relative aspect-[3/2] overflow-hidden bg-surface">
+                    {/* Shows until the (opaque) photo paints over it. */}
+                    <Skeleton
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-none"
+                    />
                     <img
                       src={image.src}
                       srcSet={image.srcSet}
@@ -40,7 +46,7 @@ export function Services() {
                       alt={service.alt}
                       loading="lazy"
                       decoding="async"
-                      className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      className="relative size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                     <span
                       aria-hidden="true"

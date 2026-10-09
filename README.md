@@ -45,8 +45,9 @@ at build time, so rebuild after any change.
 - **Business details** — `serviceRegion`, `businessHours`, `city` and `state`.
   They feed the footer and the LocalBusiness structured data; the footer shows a
   neutral fallback text while they are empty.
-- **Photos** — `assets-src/photos/` holds blank placeholders (same sizes as the
-  final crops). Replace them with real work photos and run `npm run images`.
+- **Photos** — `assets-src/photos/` holds transparent placeholders (same sizes
+  as the final crops), so every photo slot shows its loading skeleton. Replace
+  them with real work photos and run `npm run images`.
 
 Page copy (services, materials, galleries, FAQ, navigation) is in
 [`src/content/home.ts`](src/content/home.ts).
@@ -63,6 +64,9 @@ To add or replace a photo: put the original in `assets-src/photos/`, run
 `npm run images`, then register its intrinsic size in
 [`src/lib/images.ts`](src/lib/images.ts) so `width`/`height` and `srcset` stay
 correct (prevents layout shift).
+
+Each photo sits on a shadcn/ui `Skeleton` that pulses until the image paints
+over it, so use opaque photos (JPEG/WebP without transparency).
 
 ## Project layout
 

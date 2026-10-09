@@ -35,6 +35,7 @@
   --color-foreground: var(--foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
@@ -48,6 +49,7 @@
   --popover: #343638;
   --popover-foreground: #f0f0f0;
   --muted-foreground: #b8bbc0;
+  --accent: #2e3134; /* skeletons */
   --border: #ffffff26;
   --ring: #8c8c8c;
 

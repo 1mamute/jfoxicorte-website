@@ -111,6 +111,7 @@ async function brand() {
     <text x="245" y="200" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="40" fill="#f0f0f0">JF OXICORTE</text>
   </svg>`);
   await sharp(src("photos", "laser.webp"))
+    .flatten({ background: "#2e3134" }) // transparent placeholder -> solid
     .resize(1200, 630, { fit: "cover", position: "right" })
     .modulate({ brightness: 0.7 })
     .composite([
