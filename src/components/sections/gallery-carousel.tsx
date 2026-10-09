@@ -18,7 +18,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
 import type { Gallery, GallerySlide } from "@/content/home";
 import { photo } from "@/lib/images";
 import { cn } from "@/lib/utils";
@@ -172,10 +172,7 @@ function Lightbox({
                     width: `min(100cqw, ${image.width / image.height} * 100cqh)`,
                   }}
                 >
-                  <Skeleton
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-none"
-                  />
+                  <PhotoPlaceholder image={image} />
                   <img
                     src={image.src}
                     srcSet={image.srcSet}
@@ -269,9 +266,9 @@ export function GalleryCarousel({
                     setLightboxOpen(true);
                   }}
                 >
-                  <Skeleton
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-none"
+                  <PhotoPlaceholder
+                    image={image}
+                    className="[scale:var(--zoom)] [background-position:var(--pos)]"
                   />
                   <img
                     src={image.src}

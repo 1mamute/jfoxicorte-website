@@ -16,15 +16,16 @@ npm run dev        # http://localhost:3000
 
 ## Commands
 
-| Command            | Purpose                                                          |
-| ------------------ | ---------------------------------------------------------------- |
-| `npm run dev`      | Development server with hot reload.                              |
-| `npm run build`    | Production build, exported to `out/`.                            |
-| `npm run preview`  | Serve `out/` locally (build first).                              |
-| `npm run images`   | Regenerate the responsive images from `assets-src/` (see below). |
-| `npm run check`    | Lint (warnings fail), formatting and strict type checks.         |
-| `npm run format`   | Format code and docs, including Tailwind class ordering.         |
-| `npm run lint:fix` | Fix lint issues where possible.                                  |
+| Command            | Purpose                                                           |
+| ------------------ | ----------------------------------------------------------------- |
+| `npm run dev`      | Dev server with hot reload; also rebuilds photos as you add them. |
+| `npm run build`    | Production build (photos included), exported to `out/`.           |
+| `npm run preview`  | Serve `out/` locally (build first).                               |
+| `npm run images`   | Build the photos from `assets-src/photos/` (see below).           |
+| `npm run icons`    | Regenerate favicon and app icons from the logo.                   |
+| `npm run check`    | Lint (warnings fail), formatting and strict type checks.          |
+| `npm run format`   | Format code and docs, including Tailwind class ordering.          |
+| `npm run lint:fix` | Fix lint issues where possible.                                   |
 
 Before deploying, run `npm run check` and `npm run build`.
 
@@ -45,35 +46,54 @@ at build time, so rebuild after any change.
 - **Business details** — `serviceRegion`, `businessHours`, `city` and `state`.
   They feed the footer and the LocalBusiness structured data; the footer shows a
   neutral fallback text while they are empty.
-- **Photos** — `assets-src/photos/` holds transparent placeholders (same sizes
-  as the final crops), so every photo slot shows its loading skeleton. Replace
-  them with real work photos and run `npm run images`.
+- **Photos** — `assets-src/photos/` holds transparent placeholders, so every
+  photo slot shows a loading skeleton. Replace them with real work photos (see
+  [Images](#images)).
 
 Page copy (services, materials, galleries, FAQ, navigation) is in
 [`src/content/home.ts`](src/content/home.ts).
 
 ## Images
 
-Originals live in `assets-src/photos/` (and the brand files in
-`assets-src/brand/`). `npm run images` writes WebP variants at 480/800/1200/1600px
-to `public/images/<name>-<width>.webp`, plus the icons and the Open Graph image.
-Commit the generated files; the build does not resize images (Next.js image
-optimization needs a server).
+Photos live in `assets-src/photos/`; the file name (without extension) is the
+photo's name in the code. `hero.*` is the hero background and the source of the
+Open Graph image.
 
-To add or replace a photo: put the original in `assets-src/photos/`, run
-`npm run images`, then register its intrinsic size in
-[`src/lib/images.ts`](src/lib/images.ts) so `width`/`height` and `srcset` stay
-correct (prevents layout shift).
+To add or replace a photo:
 
-Each photo sits on a shadcn/ui `Skeleton` that pulses until the image paints
-over it, so use opaque photos (JPEG/WebP without transparency).
+1. Drop the original into `assets-src/photos/` (JPEG, PNG, WebP or AVIF; name in
+   lowercase with hyphens, e.g. `laser-flange.jpg`). Straight from the camera is
+   fine: EXIF rotation is applied, metadata (including GPS) is stripped and the
+   size is capped at 1600px wide. Export HEIC photos as JPEG first.
+2. Reference it by name in [`src/content/home.ts`](src/content/home.ts), e.g. a
+   new gallery slide `{ photo: "laser-flange", alt: "…", label: "…" }`. The name
+   is type-checked, so a typo fails `npm run check`.
+
+That's it: `npm run dev` picks the file up while running, and `npm run build`
+and `npm run check` run `npm run images` first. To replace a photo, overwrite
+the file with the same name.
+
+`scripts/images.mjs` writes WebP variants at 480/800/1200/1600px to
+`public/images/<name>.<hash>-<width>.webp` and records each photo's size,
+variants and a tiny blurred preview in `src/lib/photos.generated.json`, which
+[`src/lib/images.ts`](src/lib/images.ts) reads. Unchanged photos are skipped and
+outdated variants are deleted. All of these outputs (and `public/og-image.jpg`)
+are git-ignored; only the originals are committed.
+
+While a photo downloads, its slot shows the blurred preview. Transparent images
+are treated as placeholders and show a pulsing skeleton instead, so real photos
+must be opaque. The script warns about placeholders and about photos narrower
+than 1600px.
+
+The favicon and app icons come from `assets-src/brand/logo-mark.svg`; run
+`npm run icons` after changing the logo and commit the results.
 
 ## Project layout
 
 ```text
 assets-src/               Original photos and brand files (not deployed)
-scripts/                  Image generation script
-public/                   Files copied as-is to the export (images, icons, OG image)
+scripts/                  Photo pipeline, icon generation, dev runner
+public/                   Files copied as-is to the export (icons; generated photos)
 src/app/                  Layout, page, 404, metadata routes (robots, sitemap, manifest)
 src/components/sections/  Page sections (hero, about, services, materials, projects, FAQ, contact)
 src/components/site/      Header, footer, menu, contact links/notice, icons, brand
@@ -119,20 +139,23 @@ Notes:
 ```sh
 SITE_URL=https://www.example.com.br npm run build
 
-# Fingerprinted assets: cache for a year.
+# Fingerprinted assets (scripts, styles, photos): cache for a year.
 aws s3 sync out/_next/static s3://BUCKET/_next/static \
   --cache-control "public, max-age=31536000, immutable"
+aws s3 sync out/images s3://BUCKET/images \
+  --cache-control "public, max-age=31536000, immutable"
 
-# Everything else (HTML, images, icons, robots, sitemap, manifest): revalidate.
-aws s3 sync out s3://BUCKET --delete --exclude "_next/static/*" \
+# Everything else (HTML, icons, OG image, robots, sitemap, manifest): revalidate.
+aws s3 sync out s3://BUCKET --delete \
+  --exclude "_next/static/*" --exclude "images/*" \
   --cache-control "public, max-age=0, must-revalidate"
 
 aws cloudfront create-invalidation --distribution-id DIST_ID --paths "/*"
 ```
 
-Upload `_next/static` first so new HTML never references missing assets. Images
-in `public/images/` keep stable names, so they use the revalidating policy.
-Change the file name if you want them cached as immutable.
+Upload the fingerprinted folders first so new HTML never references missing
+files. They are synced without `--delete`, so pages still cached by visitors
+keep working; prune old files occasionally if the bucket size matters.
 
 The site is a single page, so CloudFront's default root object is the only
 `index.html` lookup needed. If you add routes later, also add a CloudFront
