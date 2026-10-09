@@ -306,6 +306,8 @@
   display: inline-block;
   width: 20px;
   height: 1px;
+  /* items-center lands it on cap-height middle; nudge to x-height middle. */
+  translate: 0 1px;
   background: currentColor;
   transition:
     width 0.2s,
