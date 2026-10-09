@@ -9,7 +9,7 @@ One-page Portuguese-language (pt-BR) marketing site for JF Oxicorte (laser/oxy-f
 ## Commands
 
 - `npm run dev` — runs `scripts/dev.mjs`: builds photos, watches `assets-src/photos/`, then starts `next dev` (localhost:3000). Use this instead of `next dev` directly or new photos won't be picked up.
-- `npm run build` — static export to `out/` (`prebuild` runs `npm run images`). Set `SITE_URL` to override the canonical origin.
+- `npm run build` — static export to `out/` (`prebuild` runs `npm run images`). Set `SITE_URL` to override the canonical origin. Set `BASE_PATH` (e.g. `/repo`) when serving from a sub-path; the GitHub Pages workflow does this.
 - `npm run check` — lint (`--max-warnings=0`), `prettier --check`, and `next typegen && tsc --noEmit`. Run before committing.
 - `npm run lint:fix` / `npm run format` — autofix lint / prettier (includes Tailwind class ordering).
 - `npm run images` — regenerate photo variants; `npm run icons` — regenerate favicon/app icons from `assets-src/brand/logo-mark.svg`.

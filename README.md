@@ -125,6 +125,23 @@ Notes:
   WhatsApp button offset.
 - Motion respects `prefers-reduced-motion`.
 
+## Deploying to GitHub Pages
+
+`.github/workflows/deploy.yml` builds and publishes `out/` on every push to
+`main` (or manually from the Actions tab). One-time setup: **Settings → Pages →
+Source: GitHub Actions**.
+
+The workflow runs `npm run check` first, then builds with `SITE_URL` and
+`BASE_PATH` taken from `actions/configure-pages`. Project sites live under a
+sub-path (`https://<user>.github.io/<repo>/`), which `BASE_PATH` handles for
+`_next` assets, photos, icons and the manifest. When a custom domain is set in
+Settings → Pages, both values update on the next run and the base path
+becomes empty. To build a sub-path site locally:
+
+```sh
+SITE_URL=https://<user>.github.io BASE_PATH=/<repo> npm run build
+```
+
 ## Deploying to S3 + CloudFront
 
 `next.config.ts` uses `output: "export"`, `trailingSlash: true` and

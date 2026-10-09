@@ -49,6 +49,12 @@ export const siteOrigin = (() => {
   return url ? url.origin : null;
 })();
 
+/** Sub-path the site is served from (from `BASE_PATH`), or "" at the root. */
+export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+/** Origin plus base path, without a trailing slash; null when not configured. */
+export const siteBase = siteOrigin ? `${siteOrigin}${basePath}` : null;
+
 const phone = site.whatsapp.replace(/\D/g, "");
 const hasWhatsapp = /^55\d{10,11}$/.test(phone);
 const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(site.email);
