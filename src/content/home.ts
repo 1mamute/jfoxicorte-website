@@ -1,5 +1,3 @@
-import type { PhotoName } from "@/lib/images";
-
 export const navigation = [
   { href: "#empresa", label: "Quem somos" },
   { href: "#servicos", label: "Serviços" },
@@ -7,8 +5,8 @@ export const navigation = [
   { href: "#projetos", label: "Projetos" },
 ] as const;
 
+// Each service's photo is assets-src/photos/services/<position>.jpg.
 export const services: {
-  photo: PhotoName;
   alt: string;
   category: string;
   title: string;
@@ -19,7 +17,6 @@ export const services: {
   service: string;
 }[] = [
   {
-    photo: "torch",
     alt: "Corte a maçarico de aço carbono — imagem ilustrativa",
     category: "Oxicorte",
     title: "Corte a maçarico",
@@ -30,7 +27,6 @@ export const services: {
     service: "Corte a maçarico",
   },
   {
-    photo: "laser",
     alt: "Equipamento de corte a laser em chapa — imagem ilustrativa",
     category: "Corte a laser",
     title: "Detalhes que fazem a diferença",
@@ -41,7 +37,6 @@ export const services: {
     service: "Corte a laser",
   },
   {
-    photo: "bending",
     alt: "Ferramentas de uma prensa dobradeira — imagem ilustrativa",
     category: "Dobra de chapas",
     title: "Além do corte, a forma",
@@ -71,82 +66,19 @@ export const materials = [
   },
 ] as const;
 
-export type GallerySlide = {
-  photo: PhotoName;
-  alt: string;
-  label: string;
-  /** Optional crop to highlight a detail of the same photo (1–3). */
-  zoom?: number;
-  /** CSS object-position used together with zoom. */
-  position?: string;
-};
-
-export type Gallery = {
+export type GalleryInfo = {
+  /** Folder with the photos: assets-src/photos/gallery/<id>/. */
   id: string;
   title: string;
   caption: string;
-  slides: GallerySlide[];
 };
 
-// Add more slides per service when real photos are available.
-export const galleries: Gallery[] = [
-  {
-    id: "laser",
-    title: "Corte a laser",
-    caption: "Recortes sob medida",
-    slides: [
-      {
-        photo: "laser",
-        alt: "Corte a laser em chapa metálica",
-        label: "Visão geral",
-      },
-      {
-        photo: "laser",
-        alt: "Detalhe do corte a laser",
-        label: "Detalhe do corte",
-        zoom: 1.6,
-        position: "48% 66%",
-      },
-    ],
-  },
-  {
-    id: "oxicorte",
-    title: "Oxicorte",
-    caption: "Aço carbono",
-    slides: [
-      {
-        photo: "torch",
-        alt: "Processo de corte a maçarico",
-        label: "Visão geral",
-      },
-      {
-        photo: "torch",
-        alt: "Detalhe do corte a maçarico",
-        label: "Detalhe do corte",
-        zoom: 1.6,
-        position: "50% 66%",
-      },
-    ],
-  },
-  {
-    id: "dobra",
-    title: "Dobra de chapas",
-    caption: "Ângulos e perfis",
-    slides: [
-      {
-        photo: "bending",
-        alt: "Ferramentas de uma prensa dobradeira",
-        label: "Visão geral",
-      },
-      {
-        photo: "bending",
-        alt: "Detalhe das ferramentas de dobra",
-        label: "Detalhe das ferramentas",
-        zoom: 1.5,
-        position: "54% 56%",
-      },
-    ],
-  },
+// Photos and their texts come from assets-src/photos/gallery/<id>/ (1.jpg +
+// 1.json, 2.jpg + 2.json, ...).
+export const galleries: GalleryInfo[] = [
+  { id: "laser", title: "Corte a laser", caption: "Recortes sob medida" },
+  { id: "oxicorte", title: "Oxicorte", caption: "Aço carbono" },
+  { id: "dobra", title: "Dobra de chapas", caption: "Ângulos e perfis" },
 ];
 
 export const faq = [

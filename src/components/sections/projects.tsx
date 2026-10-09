@@ -1,11 +1,12 @@
 import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
 import { galleries } from "@/content/home";
+import { withPhotos } from "@/lib/images";
 
 import { GalleryCarousel } from "./gallery-carousel";
 
 export function Projects() {
-  const [featured, ...others] = galleries;
+  const [featured, ...others] = withPhotos(galleries);
 
   return (
     <section

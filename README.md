@@ -47,38 +47,51 @@ at build time, so rebuild after any change.
   They feed the footer and the LocalBusiness structured data; the footer shows a
   neutral fallback text while they are empty.
 - **Photos** — `assets-src/photos/` holds transparent placeholders, so every
-  photo slot shows a loading skeleton. Replace them with real work photos (see
-  [Images](#images)).
+  photo slot shows a loading skeleton. Replace them with real work photos and
+  write each gallery photo's text (see [Images](#images)).
 
-Page copy (services, materials, galleries, FAQ, navigation) is in
+Page copy (services, materials, gallery titles, FAQ, navigation) is in
 [`src/content/home.ts`](src/content/home.ts).
 
 ## Images
 
-Photos live in `assets-src/photos/`; the file name (without extension) is the
-photo's name in the code. `hero.*` is the hero background and the source of the
-Open Graph image.
+Original photos live in `assets-src/photos/`, one folder per place on the page.
+Photos are numbered; any of JPEG, PNG, WebP or AVIF works.
 
-To add or replace a photo:
+```text
+assets-src/photos/
+  hero/1.jpg             Hero background (also the Open Graph image)
+  services/1.jpg …       "O que fazemos" cards, in the order of `services` in home.ts
+  gallery/<id>/1.jpg     "Do material à forma" gallery photos, shown in number order
+  gallery/<id>/1.json    Text shown on that photo: { "text": "Visão geral" }
+```
 
-1. Drop the original into `assets-src/photos/` (JPEG, PNG, WebP or AVIF; name in
-   lowercase with hyphens, e.g. `laser-flange.jpg`). Straight from the camera is
-   fine: EXIF rotation is applied, metadata (including GPS) is stripped and the
-   size is capped at 1600px wide. Export HEIC photos as JPEG first.
-2. Reference it by name in [`src/content/home.ts`](src/content/home.ts), e.g. a
-   new gallery slide `{ photo: "laser-flange", alt: "…", label: "…" }`. The name
-   is type-checked, so a typo fails `npm run check`.
+- **Hero and services** have no text. Their alt text stays in the code
+  (`hero.tsx` and `alt` in each service of [`home.ts`](src/content/home.ts)).
+  `services/` needs exactly one photo per service.
+- **Galleries**: each folder name is the `id` of a gallery in `home.ts`
+  (`laser`, `oxicorte`, `dobra`). Every photo needs a JSON file with the same
+  number containing only `text`. The photo's alt text is the gallery title plus
+  that text (e.g. "Corte a laser: Visão geral"). To add a gallery, add the
+  folder and an entry in `galleries`.
+- Photos are cropped to their slot from the center, so keep the subject roughly
+  centered.
 
-That's it: `npm run dev` picks the file up while running, and `npm run build`
-and `npm run check` run `npm run images` first. To replace a photo, overwrite
-the file with the same name.
+To add, replace or remove a photo, change the files and commit. Straight from
+the camera is fine: EXIF rotation is applied, metadata (including GPS) is
+stripped and the size is capped at 1600px wide. Export HEIC photos as JPEG
+first. `npm run dev` picks changes up while running, and `npm run build` and
+`npm run check` run `npm run images` first, so CI only needs
+`npm ci && npm run build`. A layout mistake (missing or malformed JSON, a
+non-numbered file, a gallery folder without a matching `id`, a wrong number of
+service photos) fails with a message naming the file.
 
 `scripts/images.mjs` writes WebP variants at 480/800/1200/1600px to
 `public/images/<name>.<hash>-<width>.webp` and records each photo's size,
-variants and a tiny blurred preview in `src/lib/photos.generated.json`, which
-[`src/lib/images.ts`](src/lib/images.ts) reads. Unchanged photos are skipped and
-outdated variants are deleted. All of these outputs (and `public/og-image.jpg`)
-are git-ignored; only the originals are committed.
+variants, text and a tiny blurred preview in `src/lib/photos.generated.json`,
+which [`src/lib/images.ts`](src/lib/images.ts) reads. Unchanged photos are
+skipped and outdated variants are deleted. All of these outputs (and
+`public/og-image.jpg`) are git-ignored; only the originals are committed.
 
 While a photo downloads, its slot shows the blurred preview. Transparent images
 are treated as placeholders and show a pulsing skeleton instead, so real photos

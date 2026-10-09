@@ -1,13 +1,18 @@
-// Builds the site's photos from the originals in assets-src/photos/.
+// Builds the site's photos from the originals in assets-src/photos/:
+//
+//   hero/1.jpg                    hero background (also the Open Graph image)
+//   services/1.jpg, 2.jpg, ...    "O que fazemos" cards, in order
+//   gallery/<id>/1.jpg + 1.json   "Do material à forma" galleries; <id> matches
+//                                 a gallery in src/content/home.ts and each
+//                                 JSON is { "text": "Visão geral" }
 //
 //   node scripts/images.mjs           one-off (also runs before dev/build/typecheck)
-//   node scripts/images.mjs --watch   rebuild whenever a photo is added/changed
+//   node scripts/images.mjs --watch   rebuild whenever a photo or JSON changes
 //
-// For every original it writes content-hashed WebP variants to public/images/
-// and records size, variants and a blurred preview in
-// src/lib/photos.generated.json (read by src/lib/images.ts). Unchanged photos
-// are skipped. `hero.*` also becomes the Open Graph image (public/og-image.jpg).
-// All outputs are generated, so they are git-ignored.
+// Writes content-hashed WebP variants to public/images/ and records sizes,
+// variants, blurred previews and texts in src/lib/photos.generated.json (read
+// by src/lib/images.ts). Unchanged photos are skipped. All outputs are
+// generated, so they are git-ignored.
 import crypto from "node:crypto";
 import fs from "node:fs";
 import fsp from "node:fs/promises";
@@ -26,41 +31,125 @@ const WIDTHS = [480, 800, 1200, 1600];
 const QUALITY = 72;
 // Bump when the output settings change so every photo is regenerated.
 const VERSION = 1;
-const SUPPORTED = /\.(jpe?g|png|webp|avif|tiff?)$/i;
+const IMAGE = /\.(jpe?g|png|webp|avif|tiff?)$/i;
 const HEIC = /\.hei[cf]$/i;
-const NAME = /^[a-z0-9][a-z0-9-]*$/;
+const NUMBER = /^[1-9]\d*$/;
+const SLUG = /^[a-z0-9][a-z0-9-]*$/;
+const IGNORED = /^(\..*|thumbs\.db|desktop\.ini)$/i;
 
 const log = (msg) => console.log(`[images] ${msg}`);
+const rel = (file) => path.relative(photosDir, file).replaceAll("\\", "/");
 
 async function readManifest() {
   try {
     return JSON.parse(await fsp.readFile(manifestPath, "utf8"));
   } catch {
-    return { photos: {} };
+    return {};
   }
 }
 
-function listOriginals() {
-  const errors = [];
-  const originals = new Map();
-  for (const file of fs.readdirSync(photosDir).sort()) {
-    if (file.startsWith(".")) continue;
-    const { name } = path.parse(file);
-    if (HEIC.test(file)) {
-      errors.push(`${file}: HEIC is not supported, export it as JPEG.`);
-    } else if (!SUPPORTED.test(file)) {
-      errors.push(`${file}: unsupported format (use JPEG, PNG, WebP or AVIF).`);
-    } else if (!NAME.test(name)) {
+function entries(dir) {
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => !IGNORED.test(entry.name));
+}
+
+/**
+ * Numbered photos of one folder (1.jpg, 2.jpg, ...), sorted by number. With
+ * `texts`, every photo needs a matching N.json with { "text": "..." }.
+ */
+function numbered(dir, errors, { texts = false } = {}) {
+  const photos = new Map();
+  const jsons = new Map();
+  for (const entry of entries(dir)) {
+    const file = path.join(dir, entry.name);
+    const { name, ext } = path.parse(entry.name);
+    if (entry.isDirectory()) errors.push(`${rel(file)}: unexpected folder.`);
+    else if (!NUMBER.test(name))
+      errors.push(`${rel(file)}: name it with a number (1, 2, 3...).`);
+    else if (texts && ext.toLowerCase() === ".json") jsons.set(name, file);
+    else if (HEIC.test(ext))
+      errors.push(`${rel(file)}: HEIC is not supported, export it as JPEG.`);
+    else if (!IMAGE.test(ext))
+      errors.push(`${rel(file)}: use JPEG, PNG, WebP or AVIF.`);
+    else if (photos.has(name))
+      errors.push(`${rel(file)}: duplicate of ${rel(photos.get(name))}.`);
+    else photos.set(name, file);
+  }
+
+  const list = [...photos]
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .map(([number, file]) => ({ number, file }));
+  if (!texts) return list;
+
+  for (const [number, json] of jsons) {
+    if (!photos.has(number)) errors.push(`${rel(json)}: no matching photo.`);
+  }
+  for (const photo of list) {
+    const json = jsons.get(photo.number);
+    if (!json) {
       errors.push(
-        `${file}: use lowercase letters, digits and hyphens in the name.`,
+        `${rel(photo.file)}: missing ${photo.number}.json with { "text": "..." }.`,
       );
-    } else if (originals.has(name)) {
-      errors.push(`${file}: duplicate name "${name}".`);
-    } else {
-      originals.set(name, path.join(photosDir, file));
+      continue;
+    }
+    try {
+      const data = JSON.parse(fs.readFileSync(json, "utf8"));
+      const extra = Object.keys(data ?? {}).find((key) => key !== "text");
+      if (typeof data?.text !== "string" || !data.text.trim())
+        throw new Error('expected { "text": "..." }');
+      if (extra) throw new Error(`unexpected key "${extra}"`);
+      photo.text = data.text.trim();
+    } catch (error) {
+      errors.push(`${rel(json)}: ${error.message}.`);
     }
   }
-  return { originals, errors };
+  return list;
+}
+
+/** Reads the folder layout described at the top of this file. */
+function scan() {
+  const errors = [];
+  const at = (...p) => path.join(photosDir, ...p);
+  const isDir = (dir) => fs.existsSync(dir) && fs.statSync(dir).isDirectory();
+
+  for (const entry of entries(photosDir)) {
+    const known = ["hero", "services", "gallery"].includes(entry.name);
+    if (!known || !entry.isDirectory())
+      errors.push(
+        `${entry.name}: only the hero/, services/ and gallery/ folders belong here.`,
+      );
+  }
+
+  const hero = isDir(at("hero")) ? numbered(at("hero"), errors) : [];
+  if (hero.length !== 1 || hero[0].number !== "1")
+    errors.push("hero/: needs exactly one photo, named 1 (e.g. hero/1.jpg).");
+
+  const services = isDir(at("services"))
+    ? numbered(at("services"), errors)
+    : [];
+  if (!services.length)
+    errors.push("services/: add the service photos (1.jpg, 2.jpg, ...).");
+
+  const galleries = {};
+  if (isDir(at("gallery"))) {
+    for (const entry of entries(at("gallery"))) {
+      const dir = at("gallery", entry.name);
+      if (!entry.isDirectory() || !SLUG.test(entry.name)) {
+        errors.push(
+          `${rel(dir)}: expected a gallery folder (lowercase letters, digits, hyphens).`,
+        );
+        continue;
+      }
+      galleries[entry.name] = numbered(dir, errors, { texts: true });
+      if (!galleries[entry.name].length) errors.push(`${rel(dir)}: no photos.`);
+    }
+  }
+  if (!Object.keys(galleries).length)
+    errors.push("gallery/: add at least one gallery folder.");
+
+  if (errors.length) throw new Error(errors.join("\n"));
+  return { hero: hero[0], services, galleries };
 }
 
 /** Tiny preview wrapped in an SVG blur, used as a CSS background. */
@@ -104,10 +193,10 @@ async function buildPhoto(name, file, hash) {
   else if (width < WIDTHS.at(-1))
     notes.push(`only ${width}px wide, may look soft on large screens`);
   log(
-    `${path.basename(file)} -> ${widths.join(", ")}` +
+    `${rel(file)} -> ${widths.join(", ")}` +
       (notes.length ? ` (${notes.join("; ")})` : ""),
   );
-  return { width: top, height, widths, hash, ...(blur && { blur }) };
+  return { name, width: top, height, widths, hash, ...(blur && { blur }) };
 }
 
 async function buildOgImage(heroFile) {
@@ -145,43 +234,63 @@ async function buildOgImage(heroFile) {
 }
 
 export async function generate() {
-  const { originals, errors } = listOriginals();
-  if (!originals.has("hero"))
-    errors.push("hero.* is missing (hero background and Open Graph image).");
-  if (errors.length) throw new Error(errors.join("\n"));
-
+  const layout = scan();
   await fsp.mkdir(outDir, { recursive: true });
+
   const previous = await readManifest();
-  const photos = {};
+  const cache = new Map(
+    [
+      previous.hero,
+      ...(previous.services ?? []),
+      ...Object.values(previous.galleries ?? {}).flat(),
+    ]
+      .filter(Boolean)
+      .map((entry) => [entry.name, entry]),
+  );
   let built = 0;
 
-  for (const [name, file] of originals) {
+  const build = async (name, { file, text }) => {
     const hash = crypto
       .createHash("sha256")
       .update(`${VERSION}:${QUALITY}:${WIDTHS}:`)
       .update(await fsp.readFile(file))
       .digest("hex")
       .slice(0, 8);
-    const cached = previous.photos?.[name];
+    const cached = cache.get(name);
     const upToDate =
       cached?.hash === hash &&
       cached.widths.every((w) =>
         fs.existsSync(path.join(outDir, `${name}.${hash}-${w}.webp`)),
       );
-    photos[name] = upToDate ? cached : await buildPhoto(name, file, hash);
     if (!upToDate) built++;
+    const entry = {
+      ...(upToDate ? cached : await buildPhoto(name, file, hash)),
+    };
+    delete entry.text;
+    return text === undefined ? entry : { ...entry, text };
+  };
+
+  const hero = await build("hero-1", layout.hero);
+  const services = [];
+  for (const photo of layout.services)
+    services.push(await build(`services-${photo.number}`, photo));
+  const galleries = {};
+  for (const [id, photos] of Object.entries(layout.galleries)) {
+    galleries[id] = [];
+    for (const photo of photos)
+      galleries[id].push(await build(`gallery-${id}-${photo.number}`, photo));
   }
 
-  const og = photos.hero.hash;
+  const og = hero.hash;
   if (previous.og !== og || !fs.existsSync(ogPath)) {
-    await buildOgImage(originals.get("hero"));
+    await buildOgImage(layout.hero.file);
     built++;
   }
 
   // Remove variants of deleted or replaced photos.
   const keep = new Set(
-    Object.entries(photos).flatMap(([name, p]) =>
-      p.widths.map((w) => `${name}.${p.hash}-${w}.webp`),
+    [hero, ...services, ...Object.values(galleries).flat()].flatMap((p) =>
+      p.widths.map((w) => `${p.name}.${p.hash}-${w}.webp`),
     ),
   );
   const stale = (await fsp.readdir(outDir)).filter((file) => !keep.has(file));
@@ -189,11 +298,14 @@ export async function generate() {
   if (stale.length) log(`removed ${stale.length} outdated files`);
   built += stale.length;
 
-  const manifest = JSON.stringify({ og, photos }, null, 2) + "\n";
+  const manifest =
+    JSON.stringify({ og, hero, services, galleries }, null, 2) + "\n";
   if (JSON.stringify(previous, null, 2) + "\n" !== manifest) {
     await fsp.writeFile(manifestPath, manifest);
+    if (!built) log("texts updated");
+  } else if (!built) {
+    log("photos up to date");
   }
-  if (!built) log(`${originals.size} photos up to date`);
 }
 
 export function watch() {
@@ -203,7 +315,7 @@ export function watch() {
     (running = running.then(() =>
       generate().catch((error) => console.error(`[images] ${error.message}`)),
     ));
-  fs.watch(photosDir, () => {
+  fs.watch(photosDir, { recursive: true }, () => {
     // Debounce: copying a large file fires several events.
     clearTimeout(timer);
     timer = setTimeout(run, 400);

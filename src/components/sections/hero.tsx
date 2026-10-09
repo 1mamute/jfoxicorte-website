@@ -4,9 +4,8 @@ import { ContactLink } from "@/components/site/contact-link";
 import { Icon } from "@/components/site/icons";
 import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
 import { buttonVariants } from "@/components/ui/button";
-import { photo } from "@/lib/images";
+import { heroPhoto as heroImage } from "@/lib/images";
 
-const heroImage = photo("hero");
 const heroSizes = "100vw";
 
 export function Hero() {

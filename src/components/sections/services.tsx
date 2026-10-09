@@ -1,7 +1,10 @@
 import { ContactLink } from "@/components/site/contact-link";
 import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
 import { services } from "@/content/home";
-import { photo } from "@/lib/images";
+import { servicePhotos } from "@/lib/images";
+
+// Photos come from assets-src/photos/services/, matched to the services by order.
+const photos = servicePhotos(services.length);
 
 export function Services() {
   return (
@@ -24,7 +27,7 @@ export function Services() {
           className="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain motion-reduce:snap-none sm:grid sm:grid-cols-3 sm:overflow-visible lg:gap-6 [&::-webkit-scrollbar]:hidden"
         >
           {services.map((service, index) => {
-            const image = photo(service.photo);
+            const image = photos[index];
             return (
               <li
                 key={service.title}

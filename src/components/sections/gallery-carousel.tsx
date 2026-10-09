@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
   type ComponentProps,
-  type CSSProperties,
 } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, XIcon } from "lucide-react";
@@ -19,8 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PhotoPlaceholder } from "@/components/site/photo-placeholder";
-import type { Gallery, GallerySlide } from "@/content/home";
-import { photo } from "@/lib/images";
+import type { Gallery } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 type EmblaApi = ReturnType<typeof useEmblaCarousel>[1];
@@ -49,14 +47,6 @@ function useCarouselIndex(api: EmblaApi, count: number) {
   );
 
   return { index, go };
-}
-
-function slideStyle(slide: GallerySlide) {
-  const zoom = Math.min(3, Math.max(1, slide.zoom ?? 1));
-  return {
-    "--zoom": zoom,
-    "--pos": slide.position ?? "50% 50%",
-  } as CSSProperties;
 }
 
 const arrowButton =
@@ -151,8 +141,7 @@ function Lightbox({
         className="h-[min(68dvh,calc(100dvh-160px),740px)] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
       >
         <div className="flex h-full">
-          {gallery.slides.map((item, i) => {
-            const image = photo(item.photo);
+          {gallery.slides.map((image, i) => {
             return (
               <div
                 key={i}
@@ -161,12 +150,11 @@ function Lightbox({
                 aria-label={`${i + 1} de ${count}`}
                 inert={i !== index}
                 className="[container-type:size] flex h-full min-w-0 flex-[0_0_100%] items-center justify-center overflow-hidden"
-                style={slideStyle(item)}
               >
                 {/* Box with the photo's aspect ratio, fitted inside the slide
                     (like object-contain), so the skeleton matches the photo. */}
                 <div
-                  className="relative origin-(--pos) [scale:var(--zoom)]"
+                  className="relative"
                   style={{
                     aspectRatio: `${image.width} / ${image.height}`,
                     width: `min(100cqw, ${image.width / image.height} * 100cqh)`,
@@ -179,7 +167,7 @@ function Lightbox({
                     sizes="min(1100px, 100vw)"
                     width={image.width}
                     height={image.height}
-                    alt={item.alt}
+                    alt={image.alt}
                     draggable={false}
                     decoding="async"
                     className="relative size-full object-cover select-none"
@@ -197,7 +185,7 @@ function Lightbox({
             {gallery.title}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[0.8125rem] leading-[1.4] text-[#e4e4e4] xs:text-sm">
-            {slide.label}
+            {slide.text}
           </DialogDescription>
         </div>
         {count > 1 && (
@@ -243,8 +231,7 @@ export function GalleryCarousel({
     >
       <div ref={ref} className="h-full touch-pan-y overflow-hidden">
         <div className="flex h-full">
-          {gallery.slides.map((slide, i) => {
-            const image = photo(slide.photo);
+          {gallery.slides.map((image, i) => {
             return (
               <div
                 key={i}
@@ -257,19 +244,15 @@ export function GalleryCarousel({
                 <button
                   type="button"
                   aria-haspopup="dialog"
-                  aria-label={`Ampliar foto: ${slide.alt}`}
+                  aria-label={`Ampliar foto: ${image.alt}`}
                   className="group/photo relative block size-full overflow-hidden after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(0deg,#000b,transparent_55%)] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
-                  style={slideStyle(slide)}
                   onClick={(event) => {
                     opener.current = event.currentTarget;
                     setLightboxStart(i);
                     setLightboxOpen(true);
                   }}
                 >
-                  <PhotoPlaceholder
-                    image={image}
-                    className="[scale:var(--zoom)] [background-position:var(--pos)]"
-                  />
+                  <PhotoPlaceholder image={image} />
                   <img
                     src={image.src}
                     srcSet={image.srcSet}
@@ -280,7 +263,7 @@ export function GalleryCarousel({
                     loading="lazy"
                     decoding="async"
                     draggable={false}
-                    className="relative size-full [scale:var(--zoom)] object-cover object-(--pos) transition-[scale] duration-500 select-none group-hover/photo:[scale:calc(var(--zoom)+.035)]"
+                    className="relative size-full object-cover transition-[scale] duration-500 select-none group-hover/photo:scale-[1.035]"
                   />
                 </button>
               </div>
@@ -305,7 +288,7 @@ export function GalleryCarousel({
             className="hidden text-xs tracking-[0.02em] text-[#d8d8d8] sm:block"
             aria-hidden="true"
           >
-            {gallery.slides[index]?.label}
+            {gallery.slides[index]?.text}
           </span>
           <Controls title={gallery.title} index={index} count={count} go={go} />
         </div>
