@@ -29,7 +29,7 @@ export function Header() {
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="relative block py-[15px] after:absolute after:inset-x-0 after:bottom-[9px] after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-200 hover:after:scale-x-100"
+                  className="relative block py-[15px] after:absolute after:inset-x-0 after:bottom-[9px] after:h-px after:origin-left after:scale-x-0 after:bg-[var(--spark,currentColor)] after:shadow-[0_0_6px_var(--spark-glow,transparent)] after:transition-transform after:duration-200 hover:after:scale-x-100"
                 >
                   {item.label}
                 </a>

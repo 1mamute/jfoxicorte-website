@@ -18,6 +18,11 @@ export const appearance = {
    * sections on hover. Off leaves the hover without it.
    */
   sheen: true,
+  /**
+   * Warm spark accent (orange glow) on the menu and text-link hover lines.
+   * Off keeps them in the text colour.
+   */
+  spark: true,
 } as const;
 
 /** Space-separated `data-finish` value set on <html>; the CSS matches each word. */
@@ -25,6 +30,7 @@ export const finish = [
   appearance.brushedSteel && "brushed",
   appearance.bevel && "bevel",
   appearance.sheen && "sheen",
+  appearance.spark && "spark",
 ]
   .filter(Boolean)
   .join(" ");

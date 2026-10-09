@@ -112,6 +112,14 @@
   --brushed-metal-size: auto, auto, auto, 100% 320px;
 }
 
+/* Spark accent, on when `appearance.spark` is true: the only warm colour on
+   the site, like the glow where the laser meets the steel. Used only on hover
+   lines (menu and text links); without it they stay currentColor. */
+:root[data-finish~="spark"] {
+  --spark: #ff8a3d;
+  --spark-glow: #ff8a3d80;
+}
+
 @layer base {
   html {
     scroll-padding-top: var(--header-h);
@@ -299,9 +307,14 @@
   width: 20px;
   height: 1px;
   background: currentColor;
-  transition: width 0.2s;
+  transition:
+    width 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
   a:hover > & {
     width: 30px;
+    background: var(--spark, currentColor);
+    box-shadow: 0 0 6px var(--spark-glow, transparent);
   }
 }
 
