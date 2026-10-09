@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { ContactNotice } from "@/components/site/contact-notice";
 import { IconSprite } from "@/components/site/icons";
+import { appearance } from "@/config/appearance";
 import { contacts, site, siteOrigin } from "@/config/site";
 import { services } from "@/content/home";
 
@@ -103,7 +104,11 @@ const structuredData = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={brandFont.variable}>
+    <html
+      lang="pt-BR"
+      className={brandFont.variable}
+      data-finish={appearance.brushedSteel ? "brushed" : undefined}
+    >
       <body>
         <a
           href="#principal"
