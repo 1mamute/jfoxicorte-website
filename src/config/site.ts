@@ -11,20 +11,20 @@
 export const site = {
   name: "JF Oxicorte",
   /** Public HTTPS origin, without path. Enables canonical, og:url, og:image and sitemap. */
-  url: process.env.SITE_URL ?? "",
+  url: process.env.SITE_URL ?? "https://jfoxicorte.com.br",
   /** 55 + area code + number (digits only). Ex.: "5511999999999". */
-  whatsapp: "",
+  whatsapp: "5519998534150",
   whatsappMessage: "Olá! Gostaria de solicitar um orçamento com a JF Oxicorte.",
   /** Ex.: "contato@jfoxicorte.com.br". */
-  email: "",
+  email: "vendas@jfoxicorte.com.br",
   /** Full profile URL. Ex.: "https://www.instagram.com/jfoxicorte/". */
-  instagram: "",
-  city: "",
-  state: "",
+  instagram: "https://www.instagram.com/jfoxicorte/",
+  city: "Piracicaba",
+  state: "SP",
   /** Real service area. Shown in the footer when filled. */
-  serviceRegion: "",
+  serviceRegion: "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
   /** Real opening hours; line breaks are preserved. */
-  businessHours: "",
+  businessHours: "08:00 às 17:00",
 } as const;
 
 export const EMAIL_PLACEHOLDER = "contato@jfoxicorte.example";
