@@ -35,7 +35,7 @@ export function Hero() {
         sizes={heroSizes}
         width={heroImage.width}
         height={heroImage.height}
-        alt="Processo de corte a laser de chapa metálica — foto ilustrativa"
+        alt="Máquina CNC cortando chapa de aço — foto ilustrativa"
         fetchPriority="high"
         decoding="async"
         className="absolute inset-0 -z-10 size-full object-cover object-[65%_50%] brightness-50 md:object-[80%_50%] md:brightness-[.67]"
