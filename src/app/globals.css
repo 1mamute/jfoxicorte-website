@@ -1,115 +1,205 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* Breakpoints follow the approved design (mobile-first, min-width). */
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-xs: 30.0625rem; /* 481px */
+  --breakpoint-sm: 43.75rem; /* 700px */
+  --breakpoint-md: 50.0625rem; /* 801px: desktop navigation */
+  --breakpoint-lg: 68.8125rem; /* 1101px */
+  --breakpoint-xl: 100rem; /* 1600px */
+
+  --color-ink: #090a0b; /* header, footer */
+  --color-page: #101112; /* about, faq */
+  --color-steel: #17191b; /* services, projects */
+  --color-graphite: #202224; /* materials */
+  --color-night: #0c0d0e; /* contact */
+  --color-surface: #232527; /* cards */
+  --color-strip: #1c1c1c; /* specialties strip */
+  --color-soft: #c2c5c8; /* secondary body text */
+
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-brand: var(--font-jf-brand), Arial, sans-serif;
+
+  /* Small text keeps the body line-height, as in the approved design. */
+  --text-xs--line-height: 1.6;
+  --text-sm--line-height: 1.6;
+  --text-base--line-height: 1.6;
+
+  --container-site: 77.5rem; /* 1240px */
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
   --color-border: var(--border);
-  --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: Arial, Helvetica, sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* The site has a single dark theme; shadcn tokens map onto its palette. */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-  --popover: var(--background);
-  --popover-foreground: var(--foreground);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: var(--primary);
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: var(--secondary);
-  --accent-foreground: var(--primary);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: var(--border);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--ring);
-}
+  color-scheme: dark;
+  --background: #101112;
+  --foreground: #f0f0f0;
+  --popover: #343638;
+  --popover-foreground: #f0f0f0;
+  --muted-foreground: #b8bbc0;
+  --border: #ffffff26;
+  --ring: #8c8c8c;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: var(--foreground);
-  --popover: var(--card);
-  --popover-foreground: var(--foreground);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: var(--foreground);
-  --muted: var(--secondary);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: var(--secondary);
-  --accent-foreground: var(--foreground);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: var(--card);
-  --sidebar-primary: var(--chart-1);
+  --header-h: 79px; /* includes the 1px bottom border */
+  /* One "slide" = viewport minus the sticky header. svh avoids layout jumps
+     while mobile browser toolbars collapse. */
+  --slide-h: calc(100vh - var(--header-h));
+  --section-py: clamp(28px, 4.5vh, 64px);
+  --brushed-metal:
+    linear-gradient(
+      115deg,
+      #ffffff04,
+      transparent 38%,
+      #ffffff02 64%,
+      transparent
+    ),
+    repeating-linear-gradient(0deg, #ffffff01 0 1px, transparent 1px 4px);
+
+  @supports (height: 100svh) {
+    --slide-h: calc(100svh - var(--header-h));
+    --section-py: clamp(28px, 4.5svh, 64px);
+  }
+  @variant xs {
+    --header-h: 83px;
+  }
+  @variant md {
+    --header-h: 105px;
+  }
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  html {
+    scroll-padding-top: var(--header-h);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-snap-type: y proximity;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   body {
-    @apply bg-background font-sans text-foreground antialiased;
+    @apply bg-background font-sans text-base leading-[1.6] text-foreground antialiased;
   }
+  h1,
+  h2,
+  h3 {
+    @apply leading-[1.07] font-semibold tracking-[-0.055em];
+  }
+  h3 {
+    @apply tracking-[-0.04em];
+  }
+  p {
+    @apply text-muted-foreground;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+  ::selection {
+    background: #f0f0f0;
+    color: #101112;
+  }
+}
+
+@utility container-site {
+  width: calc(100% - 36px);
+  max-width: var(--container-site);
+  margin-inline: auto;
+  @variant xs {
+    width: calc(100% - 40px);
+  }
+  @variant md {
+    width: calc(100% - 64px);
+  }
+  @variant lg {
+    width: calc(100% - 104px);
+  }
+}
+
+/* Full-viewport section used by every content block (snap target). */
+@utility slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--slide-h);
+  padding-block: var(--section-py);
+  scroll-snap-align: start;
+}
+
+@utility brushed {
+  background-image: var(--brushed-metal);
+  box-shadow: inset 0 1px 0 #ffffff0b;
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@utility text-section {
+  font-size: clamp(2rem, 4.2vw, 3.6rem);
+}
+
+/* Text link with a short trailing line that grows on hover. */
+@utility link-line {
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.2s;
+  a:hover > & {
+    width: 30px;
+  }
+}
+
+/* Native <details> accordion: animates height where supported. */
+@utility faq-item {
+  &::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      content-visibility 0.32s allow-discrete;
+  }
+  &[open]::details-content {
+    block-size: auto;
+  }
+  interpolate-size: allow-keywords;
 }
