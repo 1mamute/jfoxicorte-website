@@ -17,12 +17,23 @@ export function ContactLink({ channel, service, ...props }: ContactLinkProps) {
   const href = contactHref(channel, service);
 
   if (!href)
-    return <a href="#contato" data-contact-notice={channel} {...props} />;
+    return (
+      <a
+        href="#contato"
+        data-contact-notice={channel}
+        data-analytics-channel={channel}
+        data-analytics-service={service}
+        {...props}
+      />
+    );
 
   const external = channel !== "email";
   return (
     <a
       href={href}
+      data-analytics-name={channel === "email" ? "Enviar e-mail" : undefined}
+      data-analytics-channel={channel}
+      data-analytics-service={service}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
       {...props}
     />

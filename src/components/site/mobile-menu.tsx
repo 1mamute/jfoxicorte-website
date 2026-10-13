@@ -68,6 +68,7 @@ export function MobileMenu() {
       <div
         ref={panel}
         id="menu-movel"
+        data-analytics-location="menu-movel"
         className={cn(
           "absolute inset-x-0 top-full grid transition-[grid-template-rows,opacity,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] md:hidden",
           open

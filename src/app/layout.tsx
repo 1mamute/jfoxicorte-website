@@ -3,7 +3,9 @@ import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
 import { ContactNotice } from "@/components/site/contact-notice";
+import { GoogleAnalytics } from "@/components/site/google-analytics";
 import { IconSprite } from "@/components/site/icons";
+import { gaMeasurementId } from "@/config/analytics";
 import { finish } from "@/config/appearance";
 import { contacts, site, siteBase, siteOrigin } from "@/config/site";
 import { services } from "@/content/home";
@@ -121,6 +123,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <IconSprite />
         {children}
         <ContactNotice />
+        {process.env.NODE_ENV === "production" && gaMeasurementId && (
+          <GoogleAnalytics measurementId={gaMeasurementId} />
+        )}
         <script
           type="application/ld+json"
           // Static, build-time data; "<" is escaped so the JSON cannot close the tag.

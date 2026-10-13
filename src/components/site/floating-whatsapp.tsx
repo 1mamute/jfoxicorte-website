@@ -48,6 +48,7 @@ export function FloatingDock({ children }: { children: ReactNode }) {
   return (
     <div
       ref={dock}
+      data-analytics-location="whatsapp-flutuante"
       className="dock-reveal fixed right-5 bottom-[max(20px,var(--dock-lift,0px))] z-30 md:right-7 md:bottom-[max(28px,var(--dock-lift,0px))] print:hidden"
     >
       {children}

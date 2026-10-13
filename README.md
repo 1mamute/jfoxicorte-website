@@ -142,6 +142,84 @@ becomes empty. To build a sub-path site locally:
 SITE_URL=https://<user>.github.io BASE_PATH=/<repo> npm run build
 ```
 
+## Google Analytics 4 (GA4)
+
+A integração funciona no GitHub Pages e em qualquer hospedagem estática: o
+navegador envia os eventos ao Google, sem servidor próprio. Sem
+`GA_MEASUREMENT_ID`, nenhum script do Analytics é carregado. `npm run dev`
+também não carrega o GA4; um preview do build de produção com ID coleta dados.
+
+### Criar e ativar
+
+1. Acesse [Google Analytics](https://analytics.google.com/), crie uma conta
+   (se necessário) e uma propriedade GA4 chamada **JF Oxicorte**. Escolha o
+   fuso horário de São Paulo e a moeda BRL.
+2. Crie um **fluxo de dados Web** usando a URL pública do site no GitHub Pages
+   ou o domínio personalizado. Ative **Medição otimizada** para obter também
+   rolagens, cliques de saída e downloads. Nas opções avançadas de visualizações
+   de página, desative a medição baseada em alterações no histórico: navegar
+   entre as âncoras desta página não deve contar como uma nova página vista.
+3. Copie o **ID de medição**, no formato `G-XXXXXXXXXX`. Não é o ID numérico
+   da propriedade nem um ID `GTM-`.
+4. No repositório do GitHub, vá a **Settings → Secrets and variables → Actions →
+   Variables → New repository variable**. Nome: `GA_MEASUREMENT_ID`; valor: o ID
+   copiado. Esse ID é público e aparecerá nos arquivos do site.
+5. Execute novamente **Deploy to GitHub Pages** na aba Actions (ou faça um push
+   para `main`). O workflow já injeta a variável no build. É necessário um novo
+   build para ativar, trocar ou remover o ID.
+
+Para outros ambientes, configure `GA_MEASUREMENT_ID` no ambiente do build ou
+em `.env.local`. Um ID preenchido com formato inválido faz o build falhar.
+Não cole outra tag GA4 nem instale a mesma tag via GTM: isso duplicaria a coleta.
+
+### Métricas e botões mais clicados
+
+| Objetivo                          | Como analisar no GA4                                                                                                                                                                                                                                     |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Visitantes por dia                | Em **Explorar**, use a dimensão **Data** e a métrica **Total de usuários**. **Usuários ativos** mede o público com atividade; **Sessões** mede visitas, incluindo retornos. Usuários são identificações do navegador, não uma contagem exata de pessoas. |
+| Tempo navegado                    | Use **Tempo médio de engajamento por sessão**. O GA4 mede o tempo com a página em foco; deixar uma aba em segundo plano não equivale a navegação ativa.                                                                                                  |
+| Botões mais clicados              | Em **Explorar**, filtre **Nome do evento = button_click**, coloque **Nome do botão** e **Local do botão** nas linhas, e **Contagem de eventos** nos valores. Ordene pela contagem decrescente.                                                           |
+| Origem das visitas e dispositivos | Use os relatórios de aquisição de tráfego e os detalhes de tecnologia.                                                                                                                                                                                   |
+
+Para o ranking, primeiro crie estas **dimensões personalizadas**, todas com
+escopo **Evento**, em **Administrador → Exibição de dados → Definições
+personalizadas**:
+
+| Nome da dimensão   | Parâmetro de evento |
+| ------------------ | ------------------- |
+| Nome do botão      | `button_name`       |
+| Local do botão     | `button_location`   |
+| Canal de contato   | `contact_channel`   |
+| Serviço solicitado | `service_name`      |
+
+`button_click` registra links, botões e perguntas do FAQ, inclusive os controles
+de galeria e menu. O local distingue as seções (`inicio`, `servicos`, `contato`,
+etc.), `header`, `footer`, `menu-movel`, `dialog` e `whatsapp-flutuante`.
+Os links de contato também informam o canal; os orçamentos dos cartões informam
+o serviço. Um clique no WhatsApp indica intenção de contato, não comprova envio
+de mensagem nem venda. O evento automático `click` de links externos e
+`button_click` medem aspectos do mesmo clique: use apenas `button_click` no ranking.
+
+### Verificar a coleta
+
+Após publicar, abra o site sem bloqueador de anúncios, navegue e clique em
+alguns botões. Confira **Relatórios → Tempo real** no GA4 e procure
+`page_view` e `button_click`. Para inspecionar parâmetros, use o
+[Google Tag Assistant](https://tagassistant.google.com/) e o **DebugView**.
+Os relatórios processados e dimensões personalizadas podem levar 24–48 horas
+para aparecer. Sem o ID real e acesso à propriedade, a coleta não pode ser
+confirmada apenas pelo build.
+
+O GA4 usa cookies e sua cobertura depende dos bloqueadores e das escolhas dos
+visitantes. Esta integração desativa Google Signals e personalização de anúncios;
+não inclui uma interface de consentimento. Os parâmetros personalizados contêm
+somente rótulos da interface e contexto, sem dados de formulários ou mensagens.
+
+Referências: [configurar uma propriedade e fluxo Web](https://support.google.com/analytics/answer/14183469?hl=pt-BR),
+[tempo de engajamento](https://support.google.com/analytics/answer/11109416?hl=pt-BR),
+[dimensões personalizadas](https://support.google.com/analytics/answer/14240153?hl=pt-BR)
+e [medição otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR).
+
 ## Deploying to S3 + CloudFront
 
 `next.config.ts` uses `output: "export"`, `trailingSlash: true` and
