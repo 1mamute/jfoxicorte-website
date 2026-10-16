@@ -1,11 +1,10 @@
 import { BrandLockup } from "./brand-lockup";
 import { CurrentYear } from "./current-year";
+import { FooterSnap } from "./footer-snap";
 
 export function Footer() {
   return (
-    // Snap point for the page end, so a scroll that stops near the bottom
-    // settles with the footer fully in view.
-    <footer className="edge-light snap-end bg-ink brushed">
+    <FooterSnap>
       <div className="container-site grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 py-[22px] min-[601px]:gap-5 min-[601px]:py-6 xs:grid-cols-[120px_minmax(0,1fr)_auto] xs:gap-3">
         <a
           href="#inicio"
@@ -24,6 +23,6 @@ export function Footer() {
           Voltar ao início <span aria-hidden="true">↑</span>
         </a>
       </div>
-    </footer>
+    </FooterSnap>
   );
 }
