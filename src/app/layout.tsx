@@ -21,9 +21,8 @@ const brandFont = localFont({
   fallback: ["Arial", "sans-serif"],
 });
 
-const title = "JF Oxicorte | Corte a Laser, Oxicorte e Dobra de Aço";
-const description =
-  "JF Oxicorte: corte a laser, corte a maçarico e dobra de chapas em aço carbono A36 e 1020 e aço inox 304. Solicite um orçamento para o seu projeto.";
+const title = `JF Oxicorte | Corte a Laser, Oxicorte e Dobra de Aço em ${site.city}`;
+const description = `Corte a laser, oxicorte e dobra de chapas em aço carbono e inox em ${site.city}, ${site.state}. Fale com a JF Oxicorte e solicite um orçamento para o seu projeto.`;
 
 export const metadata: Metadata = {
   title,
@@ -75,11 +74,15 @@ const structuredData = {
   email: contacts.email ?? undefined,
   sameAs: sameAs.length > 0 ? sameAs : undefined,
   address:
-    site.city || site.state
+    site.streetAddress || site.city || site.state
       ? {
           "@type": "PostalAddress",
+          streetAddress: site.streetAddress
+            ? `${site.streetAddress}, ${site.neighborhood}`
+            : undefined,
           addressLocality: site.city || undefined,
           addressRegion: site.state || undefined,
+          postalCode: site.postalCode || undefined,
           addressCountry: "BR",
         }
       : undefined,

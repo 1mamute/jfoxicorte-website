@@ -15,12 +15,17 @@ export const site = {
   /** 55 + area code + number (digits only). Ex.: "5511999999999". */
   whatsapp: "5519998534150",
   whatsappMessage: "Olá! Gostaria de solicitar um orçamento com a JF Oxicorte.",
+  /** Landline: 55 + area code + number (digits only). */
+  telephone: "551934263710",
   /** Ex.: "contato@jfoxicorte.com.br". */
   email: "vendas@jfoxicorte.com.br",
   /** Full profile URL. Ex.: "https://www.instagram.com/jfoxicorte/". */
   instagram: "https://www.instagram.com/jfoxicorte/",
   city: "Piracicaba",
   state: "SP",
+  streetAddress: "Rua Guilherme Hoeppner, 227",
+  neighborhood: "Jardim Caxambú",
+  postalCode: "13425-060",
   /** Real service area. Shown in the footer when filled. */
   serviceRegion:
     "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
@@ -30,7 +35,7 @@ export const site = {
 
 export const EMAIL_PLACEHOLDER = "contato@jfoxicorte.example";
 
-export type ContactChannel = "whatsapp" | "email" | "instagram";
+export type ContactChannel = "whatsapp" | "phone" | "email" | "instagram";
 
 function httpsUrl(value: string) {
   try {
@@ -57,6 +62,8 @@ export const siteBase = siteOrigin ? `${siteOrigin}${basePath}` : null;
 
 const phone = site.whatsapp.replace(/\D/g, "");
 const hasWhatsapp = /^55\d{10,11}$/.test(phone);
+const telephone = site.telephone.replace(/\D/g, "");
+const hasTelephone = /^55\d{10,11}$/.test(telephone);
 const hasEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(site.email);
 const instagramUrl = httpsUrl(site.instagram)?.href ?? null;
 
@@ -66,16 +73,28 @@ if (site.whatsapp && !hasWhatsapp)
   throw new Error(
     `site.whatsapp must be 55 + area code + number, got "${site.whatsapp}".`,
   );
+if (site.telephone && !hasTelephone)
+  throw new Error(
+    `site.telephone must be 55 + area code + number, got "${site.telephone}".`,
+  );
 if (site.email && !hasEmail)
   throw new Error(`site.email is not a valid address: "${site.email}".`);
 if (site.instagram && !instagramUrl)
   throw new Error(`site.instagram must be an HTTPS URL: "${site.instagram}".`);
 
 export const contacts = {
-  phone: hasWhatsapp ? `+${phone}` : null,
+  phone: hasTelephone ? `+${telephone}` : null,
+  phoneDisplay: hasTelephone
+    ? telephone.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, "($1) $2-$3")
+    : null,
   email: hasEmail ? site.email : null,
   instagram: instagramUrl,
 };
+
+/** Opens the full address in Maps without an embedded map or API key. */
+export const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${site.streetAddress}, ${site.neighborhood}, ${site.city} - ${site.state}, ${site.postalCode}, Brasil`,
+)}`;
 
 /**
  * Resolves the destination of a contact link, or null when the channel is not
@@ -90,6 +109,8 @@ export function contactHref(channel: ContactChannel, service?: string) {
         : site.whatsappMessage;
       return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     }
+    case "phone":
+      return contacts.phone ? `tel:${contacts.phone}` : null;
     case "email":
       return hasEmail
         ? `mailto:${site.email}?subject=${encodeURIComponent("Orçamento — JF Oxicorte")}`

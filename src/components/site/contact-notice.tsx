@@ -16,6 +16,7 @@ import { Icon } from "./icons";
 
 const titles: Record<ContactChannel, string> = {
   whatsapp: "WhatsApp em atualização",
+  phone: "Telefone em atualização",
   email: "E-mail em atualização",
   instagram: "Instagram em atualização",
 };

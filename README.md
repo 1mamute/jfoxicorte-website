@@ -34,7 +34,7 @@ Before deploying, run `npm run check` and `npm run build`.
 Everything below lives in [`src/config/site.ts`](src/config/site.ts) and is read
 at build time, so rebuild after any change.
 
-- **Contacts** — `whatsapp` (55 + area code + number), `email` and
+- **Contacts** — `whatsapp` and `telephone` (55 + area code + number), `email` and
   `instagram` (full HTTPS URL). While a channel is empty, every link for it opens
   an "em atualização" notice instead of pointing to a fake number or profile. The
   contact section shows `contato@jfoxicorte.example` until `email` is filled. A
@@ -43,9 +43,11 @@ at build time, so rebuild after any change.
   `.env.production` or in the CI environment). Without it the build omits the
   canonical URL, `og:url`/`og:image`, the sitemap entries and the sitemap line in
   `robots.txt`, because those must be absolute URLs.
-- **Business details** — `serviceRegion`, `businessHours`, `city` and `state`.
-  They feed the footer and the LocalBusiness structured data; the footer shows a
-  neutral fallback text while they are empty.
+- **Business details** — `streetAddress`, `neighborhood`, `postalCode`, `city`
+  and `state` feed the contact section, footer, Google Maps links and
+  LocalBusiness structured data. `serviceRegion` and `businessHours` appear in
+  the company and contact sections, with neutral fallback text while empty.
+  The landline is shown as a click-to-call link, separate from WhatsApp.
 - **Photos** — `assets-src/photos/` holds transparent placeholders, so every
   photo slot shows a loading skeleton. Replace them with real work photos and
   write each gallery photo's text (see [Images](#images)).

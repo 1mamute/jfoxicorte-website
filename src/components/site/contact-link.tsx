@@ -27,11 +27,17 @@ export function ContactLink({ channel, service, ...props }: ContactLinkProps) {
       />
     );
 
-  const external = channel !== "email";
+  const external = channel === "whatsapp" || channel === "instagram";
   return (
     <a
       href={href}
-      data-analytics-name={channel === "email" ? "Enviar e-mail" : undefined}
+      data-analytics-name={
+        channel === "email"
+          ? "Enviar e-mail"
+          : channel === "phone"
+            ? "Ligar para a JF Oxicorte"
+            : undefined
+      }
       data-analytics-channel={channel}
       data-analytics-service={service}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
