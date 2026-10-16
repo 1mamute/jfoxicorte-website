@@ -26,6 +26,8 @@ export const site = {
   streetAddress: "Rua Guilherme Hoeppner, 227",
   neighborhood: "Jardim Caxambú",
   postalCode: "13425-060",
+  /** Google Maps listing for JF Oxicorte at number 227; avoids address ambiguity. */
+  mapsPlaceId: "ChIJj86YP9cxxpQRiOC280TKLh4",
   /** Real service area. Shown in the footer when filled. */
   serviceRegion:
     "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
@@ -91,9 +93,13 @@ export const contacts = {
   instagram: instagramUrl,
 };
 
-/** Opens the full address in Maps without an embedded map or API key. */
-export const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  `${site.streetAddress}, ${site.neighborhood}, ${site.city} - ${site.state}, ${site.postalCode}, Brasil`,
+/** Prefer the verified business listing; the address is the fallback search. */
+export const mapsHref = `https://www.google.com/maps/search/?${new URLSearchParams(
+  {
+    api: "1",
+    query: `${site.name}, ${site.streetAddress}, ${site.neighborhood}, ${site.city} - ${site.state}, ${site.postalCode}, Brasil`,
+    ...(site.mapsPlaceId && { query_place_id: site.mapsPlaceId }),
+  },
 )}`;
 
 /**

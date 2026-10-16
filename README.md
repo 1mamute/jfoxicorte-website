@@ -44,10 +44,12 @@ at build time, so rebuild after any change.
   canonical URL, `og:url`/`og:image`, the sitemap entries and the sitemap line in
   `robots.txt`, because those must be absolute URLs.
 - **Business details** — `streetAddress`, `neighborhood`, `postalCode`, `city`
-  and `state` feed the contact section, footer, Google Maps links and
+  and `state` feed the contact section, Google Maps link and
   LocalBusiness structured data. `serviceRegion` and `businessHours` appear in
   the company and contact sections, with neutral fallback text while empty.
   The landline is shown as a click-to-call link, separate from WhatsApp.
+  `mapsPlaceId` points to the verified Google Maps business listing so the link
+  does not rely on an ambiguous address search; review it if the company moves.
 - **Photos** — `assets-src/photos/` holds transparent placeholders, so every
   photo slot shows a loading skeleton. Replace them with real work photos and
   write each gallery photo's text (see [Images](#images)).

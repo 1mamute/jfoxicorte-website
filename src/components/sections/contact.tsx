@@ -16,7 +16,7 @@ export function Contact() {
         <p className="mb-[18px] eyebrow text-[#bcbcbc] md:mb-6">
           Pronto para dar forma à sua ideia?
         </p>
-        <div className="grid items-center gap-7 sm:grid-cols-2 sm:gap-9 lg:gap-[60px]">
+        <div className="grid items-center gap-7 sm:grid-cols-2 sm:gap-x-9 sm:gap-y-8 lg:gap-x-[60px]">
           <h2
             id="contato-titulo"
             className="min-w-0 text-[3.1rem] xs:text-[3.5rem] sm:self-end md:text-[clamp(2.8rem,5.5vw,4.8rem)]"
@@ -26,7 +26,7 @@ export function Contact() {
             do seu projeto.
           </h2>
 
-          <div className="w-full max-w-[370px] min-w-0 sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:justify-self-end">
+          <div className="w-full max-w-[370px] min-w-0 sm:col-start-2 sm:row-start-1 sm:justify-self-end">
             <p className="mb-[25px]">
               Envie as medidas, o desenho ou a sua ideia.
               <br />O próximo passo começa com uma conversa.
@@ -67,7 +67,6 @@ export function Contact() {
               <Icon name="instagram" />
               Instagram
             </ContactLink>
-            <ServiceInfo className="mt-7 border-t border-white/10 pt-6 sm:mt-8 [&>div]:gap-3 [&>div]:px-[19px] xs:[&>div]:px-6" />
           </div>
           <div className="flex max-w-[370px] min-w-0 items-start gap-3 border-t border-white/10 pt-6 sm:col-start-1 sm:row-start-2 sm:self-start">
             <Icon name="pin" className="text-[#bec3c7]" />
@@ -94,6 +93,7 @@ export function Contact() {
               </a>
             </div>
           </div>
+          <ServiceInfo className="w-full max-w-[370px] border-t border-white/10 pt-6 sm:col-start-2 sm:row-start-2 sm:self-start sm:justify-self-end [&>div]:gap-3 [&>div]:px-[19px] xs:[&>div]:px-6" />
         </div>
       </div>
     </section>
