@@ -264,8 +264,9 @@ inspect parameters. Processed reports and custom dimensions may take 24–48 hou
 to appear. A successful build alone cannot confirm collection in the property.
 
 The integration disables Google Signals and ad personalization. It does not load
-when Global Privacy Control or Do Not Track is enabled. GA4 uses cookies; this
-project does not include a consent interface.
+when Global Privacy Control is enabled. The legacy Do Not Track signal does not
+disable analytics. GA4 uses cookies; this project does not include a consent
+interface.
 
 Page URLs sent to GA4 exclude query parameters and fragments, including campaign
 parameters. Referrers include only the origin. Keep Enhanced measurement

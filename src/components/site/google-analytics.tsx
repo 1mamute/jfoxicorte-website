@@ -12,7 +12,7 @@ const subscribe = () => () => {};
 const serverSnapshot = () => false;
 const analyticsAllowed = () =>
   !(navigator as Navigator & { globalPrivacyControl?: boolean })
-    .globalPrivacyControl && navigator.doNotTrack !== "1";
+    .globalPrivacyControl;
 
 /** One page view plus native GA4 engagement; delegated clicks keep links static. */
 export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
