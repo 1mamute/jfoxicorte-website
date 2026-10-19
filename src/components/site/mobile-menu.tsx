@@ -69,6 +69,13 @@ export function MobileMenu() {
         ref={panel}
         id="menu-movel"
         data-analytics-location="menu-movel"
+        onBlur={(event) => {
+          if (
+            !event.currentTarget.contains(event.relatedTarget) &&
+            event.relatedTarget !== trigger.current
+          )
+            setOpen(false);
+        }}
         className={cn(
           "absolute inset-x-0 top-full grid transition-[grid-template-rows,opacity,visibility] duration-300 ease-[cubic-bezier(.22,1,.36,1)] md:hidden",
           open

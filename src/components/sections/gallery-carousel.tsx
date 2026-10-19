@@ -138,7 +138,7 @@ function Lightbox({
 
       <div
         ref={ref}
-        className="h-[min(68dvh,calc(100dvh-160px),740px)] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
+        className="h-[min(68dvh,calc(100dvh-190px),740px)] cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
       >
         <div className="flex h-full">
           {gallery.slides.map((image, i) => {
@@ -169,6 +169,7 @@ function Lightbox({
                     height={image.height}
                     alt={image.alt}
                     draggable={false}
+                    loading={i === index ? "eager" : "lazy"}
                     decoding="async"
                     className="relative size-full object-cover select-none"
                   />
@@ -217,7 +218,7 @@ export function GalleryCarousel({
   const { index, go } = useCarouselIndex(api, count);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxStart, setLightboxStart] = useState(0);
-  const opener = useRef<HTMLButtonElement | null>(null);
+  const opener = useRef<HTMLAnchorElement | null>(null);
 
   return (
     <div
@@ -229,7 +230,15 @@ export function GalleryCarousel({
         className,
       )}
     >
-      <div ref={ref} className="h-full touch-pan-y overflow-hidden">
+      <div
+        ref={ref}
+        className={cn(
+          "h-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          api
+            ? "touch-pan-y overflow-hidden"
+            : "snap-x snap-mandatory overflow-x-auto overscroll-x-contain motion-reduce:snap-none",
+        )}
+      >
         <div className="flex h-full">
           {gallery.slides.map((image, i) => {
             return (
@@ -238,15 +247,24 @@ export function GalleryCarousel({
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${i + 1} de ${count}`}
-                inert={i !== index}
-                className="relative h-full min-w-0 flex-[0_0_100%]"
+                inert={api ? i !== index : undefined}
+                className="relative h-full min-w-0 flex-[0_0_100%] snap-start"
               >
-                <button
-                  type="button"
+                <a
+                  href={image.src}
                   aria-haspopup="dialog"
                   aria-label={`Ampliar foto: ${image.alt}`}
                   className="group/photo relative block size-full overflow-hidden after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(0deg,#000b,transparent_55%)] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
                   onClick={(event) => {
+                    if (
+                      event.button !== 0 ||
+                      event.metaKey ||
+                      event.ctrlKey ||
+                      event.shiftKey ||
+                      event.altKey
+                    )
+                      return;
+                    event.preventDefault();
                     opener.current = event.currentTarget;
                     setLightboxStart(i);
                     setLightboxOpen(true);
@@ -259,13 +277,13 @@ export function GalleryCarousel({
                     sizes={sizes}
                     width={image.width}
                     height={image.height}
-                    alt=""
+                    alt={image.alt}
                     loading="lazy"
                     decoding="async"
                     draggable={false}
                     className="relative size-full object-cover transition-[scale] duration-500 select-none group-hover/photo:scale-[1.035]"
                   />
-                </button>
+                </a>
               </div>
             );
           })}
@@ -282,7 +300,7 @@ export function GalleryCarousel({
         </small>
       </p>
 
-      {count > 1 && (
+      {count > 1 && api && (
         <div className="pointer-events-none absolute inset-x-2.5 bottom-[13px] z-[2] flex items-center justify-center gap-2 sm:inset-x-[17px] sm:justify-between md:inset-x-[25px] md:bottom-[15px] md:gap-3">
           <span
             className="hidden text-xs tracking-[0.02em] text-[#d8d8d8] sm:block"

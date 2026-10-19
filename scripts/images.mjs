@@ -29,8 +29,8 @@ const logoPath = path.join(root, "assets-src", "brand", "logo-mark.svg");
 
 const WIDTHS = [480, 800, 1200, 1600];
 const QUALITY = 72;
-// Bump when the output settings change so every photo is regenerated.
-const VERSION = 1;
+// Bump when the encoder or output settings change so every photo is regenerated.
+const VERSION = 2;
 const IMAGE = /\.(jpe?g|png|webp|avif|tiff?)$/i;
 const HEIC = /\.hei[cf]$/i;
 const NUMBER = /^[1-9]\d*$/;

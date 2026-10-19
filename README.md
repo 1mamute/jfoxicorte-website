@@ -159,10 +159,13 @@ também não carrega o GA4; um preview do build de produção com ID coleta dado
    (se necessário) e uma propriedade GA4 chamada **JF Oxicorte**. Escolha o
    fuso horário de São Paulo e a moeda BRL.
 2. Crie um **fluxo de dados Web** usando a URL pública do site no GitHub Pages
-   ou o domínio personalizado. Ative **Medição otimizada** para obter também
-   rolagens, cliques de saída e downloads. Nas opções avançadas de visualizações
-   de página, desative a medição baseada em alterações no histórico: navegar
-   entre as âncoras desta página não deve contar como uma nova página vista.
+   ou o domínio personalizado. Na **Medição otimizada**, ative **Rolagens** e
+   desative os demais eventos opcionais (cliques de saída, pesquisa no site,
+   downloads, vídeos e formulários). `button_click` já mede os controles deste
+   site sem enviar URLs de contato; os eventos automáticos podem enviar URLs
+   completas e termos de consulta. Nas opções avançadas de visualizações de
+   página, desative a medição baseada em alterações no histórico: navegar entre
+   as âncoras desta página não deve contar como uma nova página vista.
 3. Copie o **ID de medição**, no formato `G-XXXXXXXXXX`. Não é o ID numérico
    da propriedade nem um ID `GTM-`.
 4. No repositório do GitHub, vá a **Settings → Secrets and variables → Actions →
@@ -201,8 +204,9 @@ de galeria e menu. O local distingue as seções (`inicio`, `servicos`, `contato
 etc.), `header`, `footer`, `menu-movel`, `dialog` e `whatsapp-flutuante`.
 Os links de contato também informam o canal; os orçamentos dos cartões informam
 o serviço. Um clique no WhatsApp indica intenção de contato, não comprova envio
-de mensagem nem venda. O evento automático `click` de links externos e
-`button_click` medem aspectos do mesmo clique: use apenas `button_click` no ranking.
+de mensagem nem venda. Mantenha os cliques de saída da Medição otimizada
+desativados também em propriedades existentes: o evento automático `click`
+inclui a URL de destino, enquanto `button_click` usa somente rótulos e contexto.
 
 ### Verificar a coleta
 
@@ -216,8 +220,12 @@ confirmada apenas pelo build.
 
 O GA4 usa cookies e sua cobertura depende dos bloqueadores e das escolhas dos
 visitantes. Esta integração desativa Google Signals e personalização de anúncios;
-não inclui uma interface de consentimento. Os parâmetros personalizados contêm
-somente rótulos da interface e contexto, sem dados de formulários ou mensagens.
+não inclui uma interface de consentimento. Com Global Privacy Control ou Do Not
+Track ativado no navegador, o script não é carregado e os cliques não são coletados.
+A URL enviada ao GA4 não inclui parâmetros de consulta nem fragmentos; a origem
+de referência é enviada sem caminho, consulta ou fragmento. Isso também remove
+parâmetros de campanha da URL enviada. Os parâmetros personalizados contêm somente
+rótulos da interface e contexto, sem dados de formulários ou mensagens.
 
 Referências: [configurar uma propriedade e fluxo Web](https://support.google.com/analytics/answer/14183469?hl=pt-BR),
 [tempo de engajamento](https://support.google.com/analytics/answer/11109416?hl=pt-BR),
@@ -275,12 +283,24 @@ Function that rewrites `/path/` to `/path/index.html`.
 
 ## Dependency notes
 
-- `npm audit` reports development-only findings through `eslint-config-next`;
-  production dependencies pass `npm audit --omit=dev`. Re-check when updating.
+- `npm audit` reports development-only findings through `eslint-config-next`
+  (`braces`, [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm),
+  currently without a patched release). These tools process repository patterns
+  during linting and are not shipped in the static website. Do not downgrade
+  Next.js to apply npm's suggested fix. Re-check when updating.
+- Sharp uses the patched `0.35.5` release or newer; its generated image
+  cache version changes with encoder upgrades so existing photos are rebuilt.
 - `serve` (used by `npm run preview`) has a scoped `compression` override; remove
   it once `serve` ships the patched dependency.
 - Some bundled lint plugins still declare ESLint 9 peer ranges, so npm prints
   peer warnings on install; linting works as configured.
+
+After `npm run build`, run `npm run check:export` to verify the actual exported
+HTML: local assets and anchor targets, photo descriptions and dimensions,
+canonical/sitemap/social URLs, error-page indexing and accidental source-map or
+private build-file exposure. It derives the hosting sub-path from the exported
+manifest and also supports builds with an empty `SITE_URL`. CI runs this check
+before uploading the deployment artifact.
 
 ## References
 

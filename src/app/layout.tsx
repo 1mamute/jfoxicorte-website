@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   title,
   description,
   applicationName: site.name,
+  referrer: "strict-origin-when-cross-origin",
   formatDetection: { telephone: false, email: false, address: false },
   // Absolute URLs (canonical, og:url, og:image) need the public domain: set SITE_URL.
   ...(siteOrigin && {

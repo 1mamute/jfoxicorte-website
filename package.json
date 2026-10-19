@@ -18,6 +18,7 @@
     "pretypecheck": "npm run images",
     "typecheck": "next typegen && tsc --noEmit",
     "check": "npm run lint && npm run format:check && npm run typecheck",
+    "check:export": "node scripts/check-export.mjs",
     "images": "node scripts/images.mjs",
     "icons": "node scripts/icons.mjs"
   },
@@ -51,7 +52,7 @@
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "serve": "^14.2.6",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   }

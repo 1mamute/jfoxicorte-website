@@ -1,18 +1,30 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 type AnalyticsWindow = Window & {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
 };
 
+const subscribe = () => () => {};
+const serverSnapshot = () => false;
+const analyticsAllowed = () =>
+  !(navigator as Navigator & { globalPrivacyControl?: boolean })
+    .globalPrivacyControl && navigator.doNotTrack !== "1";
+
 /** One page view plus native GA4 engagement; delegated clicks keep links static. */
 export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   const initialized = useRef(false);
+  const enabled = useSyncExternalStore(
+    subscribe,
+    analyticsAllowed,
+    serverSnapshot,
+  );
 
   useEffect(() => {
+    if (!enabled) return;
     const analyticsWindow = window as AnalyticsWindow;
     analyticsWindow.dataLayer ??= [];
     analyticsWindow.gtag ??= (...args: unknown[]) => {
@@ -25,6 +37,12 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
       analyticsWindow.gtag("config", measurementId, {
         allow_google_signals: false,
         allow_ad_personalization_signals: false,
+        // URLs may contain visitor data; keep only this page's path and the
+        // referring origin, while retaining referral-source reporting.
+        page_location: `${window.location.origin}${window.location.pathname}`,
+        page_referrer: document.referrer
+          ? new URL(document.referrer).origin
+          : "",
       });
       initialized.current = true;
     }
@@ -65,12 +83,12 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
     // Capture also sees clicks whose React handlers stop propagation or unmount.
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
-  }, [measurementId]);
+  }, [enabled, measurementId]);
 
-  return (
+  return enabled ? (
     <Script
       src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
       strategy="afterInteractive"
     />
-  );
+  ) : null;
 }
