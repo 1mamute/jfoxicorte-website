@@ -1,310 +1,284 @@
 # JF Oxicorte website
 
-One-page website for JF Oxicorte (laser cutting, oxy-fuel cutting and sheet-metal
-bending). Built with Next.js App Router (static export), React, TypeScript,
-Tailwind CSS v4 and shadcn/ui (Radix). The output is plain HTML/CSS/JS meant to
-be hosted on S3 + CloudFront; no Node.js server is used in production.
+One-page Portuguese-language (pt-BR) marketing website for JF Oxicorte, covering
+laser cutting, oxy-fuel cutting and sheet-metal bending. Built with Next.js App
+Router, React 19, TypeScript, Tailwind CSS v4 and shadcn/ui (Radix).
+
+The project exports static HTML, CSS and JavaScript to `out/`. Production hosting
+does not require a Node.js server. The included workflow deploys to GitHub Pages;
+S3 + CloudFront is also supported.
 
 ## Getting started
 
-Use Node.js 22.13 or newer and npm (Node.js 24 LTS recommended).
+Use Node.js 22.13 or newer and npm.
 
 ```sh
 npm ci
-npm run dev        # http://localhost:3000
+npm run dev
 ```
+
+Open <http://localhost:3000>. The development command generates photos, watches
+originals and captions for changes, and starts the Next.js development server.
 
 ## Commands
 
-| Command            | Purpose                                                           |
-| ------------------ | ----------------------------------------------------------------- |
-| `npm run dev`      | Dev server with hot reload; also rebuilds photos as you add them. |
-| `npm run build`    | Production build (photos included), exported to `out/`.           |
-| `npm run preview`  | Serve `out/` locally (build first).                               |
-| `npm run images`   | Build the photos from `assets-src/photos/` (see below).           |
-| `npm run icons`    | Regenerate favicon and app icons from the logo.                   |
-| `npm run check`    | Lint (warnings fail), formatting and strict type checks.          |
-| `npm run format`   | Format code and docs, including Tailwind class ordering.          |
-| `npm run lint:fix` | Fix lint issues where possible.                                   |
+| Command                | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `npm run dev`          | Start development with hot reload and photo watching.      |
+| `npm run build`        | Generate photos and export the production site to `out/`.  |
+| `npm run preview`      | Build the production site, then serve `out/` locally.      |
+| `npm run images`       | Generate photo variants from `assets-src/photos/`.         |
+| `npm run icons`        | Regenerate the favicon and app icons from the logo.        |
+| `npm run check`        | Run lint, formatting and TypeScript checks.                |
+| `npm run check:export` | Validate the exported site after a build.                  |
+| `npm run format`       | Format code and documentation, including Tailwind classes. |
+| `npm run lint:fix`     | Fix lint issues where possible.                            |
 
-Before deploying, run `npm run check` and `npm run build`.
+Before deploying, run:
 
-## Before going live
+```sh
+npm run check
+npm run build
+npm run check:export
+```
 
-Everything below lives in [`src/config/site.ts`](src/config/site.ts) and is read
-at build time, so rebuild after any change.
+The export check validates local assets, anchor targets, photo descriptions and
+dimensions, canonical and social URLs, sitemap entries, error-page indexing and
+accidental exposure of source maps or private build files. It supports sub-path
+hosting and builds with an explicitly empty `SITE_URL`.
 
-- **Contacts** — `whatsapp` and `telephone` (55 + area code + number), `email` and
-  `instagram` (full HTTPS URL). While a channel is empty, every link for it opens
-  an "em atualização" notice instead of pointing to a fake number or profile. The
-  contact section shows `contato@jfoxicorte.example` until `email` is filled. A
-  filled but malformed value fails the build.
-- **Domain** — set `SITE_URL` (e.g. `SITE_URL=https://www.jfoxicorte.com.br` in
-  `.env.production` or in the CI environment). Without it the build omits the
-  canonical URL, `og:url`/`og:image`, the sitemap entries and the sitemap line in
-  `robots.txt`, because those must be absolute URLs.
-- **Business details** — `streetAddress`, `neighborhood`, `postalCode`, `city`
-  and `state` feed the contact section, Google Maps link and
-  LocalBusiness structured data. `serviceRegion` and `businessHours` appear in
-  the company and contact sections, with neutral fallback text while empty.
-  The landline is shown as a click-to-call link, separate from WhatsApp.
-  `mapsPlaceId` points to the verified Google Maps business listing so the link
-  does not rely on an ambiguous address search; review it if the company moves.
-- **Photos** — `assets-src/photos/` holds transparent placeholders, so every
-  photo slot shows a loading skeleton. Replace them with real work photos and
-  write each gallery photo's text (see [Images](#images)).
+## Configuration
 
-Page copy (services, materials, gallery titles, FAQ, navigation) is in
-[`src/content/home.ts`](src/content/home.ts).
+Configuration and content are read at build time. Rebuild after changing them.
 
-## Images
+| File                                                   | Contents                                            |
+| ------------------------------------------------------ | --------------------------------------------------- |
+| [`src/config/site.ts`](src/config/site.ts)             | Business details, contact channels and default URL. |
+| [`src/content/home.ts`](src/content/home.ts)           | Navigation, services, materials, galleries and FAQ. |
+| [`src/config/appearance.ts`](src/config/appearance.ts) | Visual finish switches.                             |
+| [`src/config/analytics.ts`](src/config/analytics.ts)   | GA4 measurement ID validation.                      |
 
-Original photos live in `assets-src/photos/`, one folder per place on the page.
-Photos are numbered; any of JPEG, PNG, WebP or AVIF works.
+### Business details and contacts
+
+Edit `site.ts` to configure the business address, service area, opening hours and
+Google Maps place ID. These values feed the visible page, map link and
+LocalBusiness structured data.
+
+Contact fields are `whatsapp`, `telephone`, `email` and `instagram`. Phone numbers
+use country code `55`, area code and number; Instagram uses a full HTTPS URL.
+The landline has its own click-to-call link, separate from WhatsApp.
+
+A malformed nonempty contact value fails the build. An empty channel links to the
+contact section and, when JavaScript is available, opens an unavailable-contact
+notice. An empty email uses a placeholder in the contact section.
+
+### Build environment
+
+Set variables in the build environment or an appropriate Next.js `.env` file.
+
+| Variable            | Behavior                                                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `SITE_URL`          | Overrides the HTTPS origin in `site.ts`. If unset, uses the configured project domain. Invalid nonempty values fail the build. |
+| `BASE_PATH`         | Hosting sub-path, such as `/repository`. Leave unset or empty when hosting at the domain root.                                 |
+| `GA_MEASUREMENT_ID` | Public GA4 ID, such as `G-XXXXXXXXXX`. Unset or empty disables analytics; invalid nonempty values fail the build.              |
+
+An explicitly empty `SITE_URL` omits canonical URLs, absolute Open Graph URLs,
+sitemap entries and the sitemap reference in `robots.txt`.
+
+For example, create `.env.production` for a custom-domain build:
+
+```dotenv
+SITE_URL=https://www.example.com
+BASE_PATH=
+GA_MEASUREMENT_ID=
+```
+
+`BASE_PATH` is exposed internally as `NEXT_PUBLIC_BASE_PATH`. Use `basePath` and
+`siteBase` from `site.ts` when building asset or absolute URLs.
+
+## Photos and brand assets
+
+### Add or replace photos
+
+Store originals in `assets-src/photos/`. Supported formats are JPEG, PNG, WebP
+and AVIF; convert HEIC files to JPEG first.
 
 ```text
 assets-src/photos/
-  hero/1.jpg             Hero background (also the Open Graph image)
-  services/1.jpg …       "O que fazemos" cards, in the order of `services` in home.ts
-  gallery/<id>/1.jpg     "Do material à forma" gallery photos, shown in number order
-  gallery/<id>/1.json    Text shown on that photo: { "text": "Visão geral" }
+  hero/1.jpg             Hero background and Open Graph image
+  services/1.jpg         Service cards, in home.ts service order
+  gallery/<id>/1.jpg     Gallery photos, displayed in numeric order
+  gallery/<id>/1.json    Caption for the matching photo
 ```
 
-- **Hero and services** have no text. Their alt text stays in the code
-  (`hero.tsx` and `alt` in each service of [`home.ts`](src/content/home.ts)).
-  `services/` needs exactly one photo per service.
-- **Galleries**: each folder name is the `id` of a gallery in `home.ts`
-  (`laser`, `oxicorte`, `dobra`). Every photo needs a JSON file with the same
-  number containing only `text`. The photo's alt text is the gallery title plus
-  that text (e.g. "Corte a laser: Visão geral"). To add a gallery, add the
-  folder and an entry in `galleries`.
-- Photos are cropped to their slot from the center, so keep the subject roughly
-  centered.
+- The hero uses `1` as its filename. Services need exactly one numbered photo per
+  service. Their alt text lives in `hero.tsx` and `home.ts`; they have no caption
+  JSON files.
+- Gallery folder names must match the `galleries` IDs in `home.ts`. Each photo
+  needs a matching JSON file containing only a nonempty `text` string. Write
+  captions in pt-BR to match the site. Gallery alt text combines the gallery title
+  and caption.
+- Keep subjects centered because photos are cropped from the center. Use opaque
+  photos; transparent originals are treated as placeholders and show skeletons.
 
-To add, replace or remove a photo, change the files and commit. Straight from
-the camera is fine: EXIF rotation is applied, metadata (including GPS) is
-stripped and the size is capped at 1600px wide. Export HEIC photos as JPEG
-first. `npm run dev` picks changes up while running, and `npm run build` and
-`npm run check` run `npm run images` first, so CI only needs
-`npm ci && npm run build`. A layout mistake (missing or malformed JSON, a
-non-numbered file, a gallery folder without a matching `id`, a wrong number of
-service photos) fails with a message naming the file.
+A caption file has this structure (translate the sample text to pt-BR):
 
-`scripts/images.mjs` writes WebP variants at 480/800/1200/1600px to
-`public/images/<name>.<hash>-<width>.webp` and records each photo's size,
-variants, text and a tiny blurred preview in `src/lib/photos.generated.json`,
-which [`src/lib/images.ts`](src/lib/images.ts) reads. Unchanged photos are
-skipped and outdated variants are deleted. All of these outputs (and
-`public/og-image.jpg`) are git-ignored; only the originals are committed.
+```json
+{ "text": "Description of the work shown" }
+```
 
-While a photo downloads, its slot shows the blurred preview. Transparent images
-are treated as placeholders and show a pulsing skeleton instead, so real photos
-must be opaque. The script warns about placeholders and about photos narrower
-than 1600px.
+Update and commit originals and captions to add, replace or remove photos. To add
+a gallery, also add its entry to `galleries` in `home.ts`. `npm run dev` watches
+for changes; `npm run build` and the typecheck step in `npm run check` also
+regenerate photos automatically. Invalid filenames, captions or folder layouts
+fail generation with the relevant path.
 
-The favicon and app icons come from `assets-src/brand/logo-mark.svg`; run
-`npm run icons` after changing the logo and commit the results.
+### Generated files and icons
 
-## Project layout
+[`scripts/images.mjs`](scripts/images.mjs) applies EXIF rotation, strips metadata
+(including GPS), and generates hashed WebP variants up to 1600px wide, plus
+blurred previews and the Open Graph image. Unchanged photos are skipped and
+outdated variants are removed. The pipeline warns about placeholders and photos
+narrower than 1600px.
+
+Generated outputs are ignored by Git; regenerate them instead of editing them:
+
+- `public/images/`: responsive photo variants.
+- `public/og-image.jpg`: social sharing image.
+- `src/lib/photos.generated.json`: dimensions, variants, captions and previews,
+  consumed by `src/lib/images.ts`.
+
+To update the favicon and app icons, edit `assets-src/brand/logo-mark.svg` and run
+`npm run icons`. Commit the generated icons; unlike generated photos, they are
+tracked.
+
+## Project structure
 
 ```text
-assets-src/               Original photos and brand files (not deployed)
-scripts/                  Photo pipeline, icon generation, dev runner
-public/                   Files copied as-is to the export (icons; generated photos)
-src/app/                  Layout, page, 404, metadata routes (robots, sitemap, manifest)
-src/components/sections/  Page sections (hero, about, services, materials, projects, FAQ, contact)
-src/components/site/      Header, footer, menu, contact links/notice, icons, brand
-src/components/ui/        shadcn/ui primitives (button, dialog)
-src/config/site.ts        Business data and contact configuration
-src/content/home.ts       Page copy
+assets-src/               Original photos and brand assets
+scripts/                  Photo pipeline, icons, dev runner and export checks
+public/                   Static files copied to the export
+src/app/                  Layout, page, 404 and metadata routes
+src/components/sections/  Hero, about, services, materials, projects, FAQ, contact
+src/components/site/      Header, footer, menu, contact links, icons and analytics
+src/components/ui/        shadcn/ui primitives
+src/config/               Business, appearance and analytics configuration
+src/content/              Page copy
+src/lib/                  Shared utilities and generated photo manifest
 ```
 
-Notes:
+The layout is mobile-first, with breakpoints at 481, 700, 801 (desktop
+navigation), 1101 and 1600px. Sections use viewport sizing and scroll snapping
+below the sticky header. Visual finishes use `appearance.ts` and `data-finish`
+on `<html>`.
 
-- Mobile-first, with breakpoints at 481, 700, 801 (desktop navigation), 1101 and
-  1600px. Each section fills one viewport below the sticky header.
-- The page works without JavaScript: content, links, the FAQ (`<details>`) and the
-  services row (CSS scroll snap) are server-rendered. JavaScript adds the mobile
-  menu, gallery carousels and lightbox, the contact notice and the floating
-  WhatsApp button offset.
-- Motion respects `prefers-reduced-motion`.
+Content, links, native FAQ `<details>` and the services scroll-snap row remain
+usable without JavaScript. JavaScript adds the mobile menu, gallery carousels,
+lightbox, contact notice and floating WhatsApp offset. Motion respects
+`prefers-reduced-motion`.
 
-## Deploying to GitHub Pages
+Keep features compatible with static export: production has no request-time
+server. The configuration uses `output: "export"`, `trailingSlash: true` and
+`images.unoptimized: true`; photos use pipeline-generated responsive variants.
 
-`.github/workflows/deploy.yml` builds and publishes `out/` on every push to
-`main` (or manually from the Actions tab). One-time setup: **Settings → Pages →
-Source: GitHub Actions**.
+## Deploy to GitHub Pages
 
-The workflow runs `npm run check` first, then builds with `SITE_URL` and
-`BASE_PATH` taken from `actions/configure-pages`. Project sites live under a
-sub-path (`https://<user>.github.io/<repo>/`), which `BASE_PATH` handles for
-`_next` assets, photos, icons and the manifest. When a custom domain is set in
-Settings → Pages, both values update on the next run and the base path
-becomes empty. To build a sub-path site locally:
+1. In the repository, open **Settings → Pages** and select **GitHub Actions** as
+   the source.
+2. Push to `main`, or run **Deploy to GitHub Pages** manually from **Actions**.
 
-```sh
-SITE_URL=https://<user>.github.io BASE_PATH=/<repo> npm run build
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) installs
+dependencies, runs `npm run check`, builds, validates the export and publishes
+`out/`. It obtains `SITE_URL` and `BASE_PATH` from `actions/configure-pages`, and
+`GA_MEASUREMENT_ID` from the repository variable of the same name.
+
+Project sites use a sub-path such as `https://<account>.github.io/<repository>/`.
+`BASE_PATH` handles scripts, styles, photos, icons and the manifest. Configuring a
+custom domain in Pages settings updates the origin and base path on the next run.
+
+To build for a sub-path locally, set these values in `.env.production` and run
+`npm run build`:
+
+```dotenv
+SITE_URL=https://<account>.github.io
+BASE_PATH=/<repository>
 ```
 
-## Google Analytics 4 (GA4)
+## Google Analytics 4
 
-A integração funciona no GitHub Pages e em qualquer hospedagem estática: o
-navegador envia os eventos ao Google, sem servidor próprio. Sem
-`GA_MEASUREMENT_ID`, nenhum script do Analytics é carregado. `npm run dev`
-também não carrega o GA4; um preview do build de produção com ID coleta dados.
+Analytics runs in the browser on static hosting. It loads only in production
+builds with a configured `GA_MEASUREMENT_ID`; `npm run dev` does not collect data.
+A local production preview with an ID does collect data.
 
-### Criar e ativar
+### Set up collection
 
-1. Acesse [Google Analytics](https://analytics.google.com/), crie uma conta
-   (se necessário) e uma propriedade GA4 chamada **JF Oxicorte**. Escolha o
-   fuso horário de São Paulo e a moeda BRL.
-2. Crie um **fluxo de dados Web** usando a URL pública do site no GitHub Pages
-   ou o domínio personalizado. Na **Medição otimizada**, ative **Rolagens** e
-   desative os demais eventos opcionais (cliques de saída, pesquisa no site,
-   downloads, vídeos e formulários). `button_click` já mede os controles deste
-   site sem enviar URLs de contato; os eventos automáticos podem enviar URLs
-   completas e termos de consulta. Nas opções avançadas de visualizações de
-   página, desative a medição baseada em alterações no histórico: navegar entre
-   as âncoras desta página não deve contar como uma nova página vista.
-3. Copie o **ID de medição**, no formato `G-XXXXXXXXXX`. Não é o ID numérico
-   da propriedade nem um ID `GTM-`.
-4. No repositório do GitHub, vá a **Settings → Secrets and variables → Actions →
-   Variables → New repository variable**. Nome: `GA_MEASUREMENT_ID`; valor: o ID
-   copiado. Esse ID é público e aparecerá nos arquivos do site.
-5. Execute novamente **Deploy to GitHub Pages** na aba Actions (ou faça um push
-   para `main`). O workflow já injeta a variável no build. É necessário um novo
-   build para ativar, trocar ou remover o ID.
+1. In [Google Analytics](https://analytics.google.com/), create a GA4 property
+   with the business reporting time zone and currency, then create a web data
+   stream for the public site URL.
+2. In **Enhanced measurement**, enable scrolls and disable the other optional
+   events, including outbound clicks, site search, downloads, video and forms.
+   The site's `button_click` event tracks its controls without sending contact
+   URLs. In the advanced page-view settings, disable history-based page views so
+   anchor navigation does not count as another page view.
+3. Copy the measurement ID (`G-XXXXXXXXXX`), rather than the numeric property ID
+   or a `GTM-` container ID.
+4. For GitHub Pages, add `GA_MEASUREMENT_ID` under **Settings → Secrets and
+   variables → Actions → Variables**. For other hosts, set it in the build
+   environment or an appropriate `.env` file. The ID is public and included in
+   the exported files.
+5. Rebuild and deploy. A new build is required to enable, change or remove the ID.
+   Keep a single GA4 integration to avoid duplicate collection.
 
-Para outros ambientes, configure `GA_MEASUREMENT_ID` no ambiente do build ou
-em `.env.local`. Um ID preenchido com formato inválido faz o build falhar.
-Não cole outra tag GA4 nem instale a mesma tag via GTM: isso duplicaria a coleta.
+### Analyze clicks and engagement
 
-### Métricas e botões mais clicados
+The `button_click` event tracks links, buttons and FAQ summaries, including
+menu and gallery controls. It records interface labels and context rather than
+contact URLs, WhatsApp messages or visitor input.
 
-| Objetivo                          | Como analisar no GA4                                                                                                                                                                                                                                     |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Visitantes por dia                | Em **Explorar**, use a dimensão **Data** e a métrica **Total de usuários**. **Usuários ativos** mede o público com atividade; **Sessões** mede visitas, incluindo retornos. Usuários são identificações do navegador, não uma contagem exata de pessoas. |
-| Tempo navegado                    | Use **Tempo médio de engajamento por sessão**. O GA4 mede o tempo com a página em foco; deixar uma aba em segundo plano não equivale a navegação ativa.                                                                                                  |
-| Botões mais clicados              | Em **Explorar**, filtre **Nome do evento = button_click**, coloque **Nome do botão** e **Local do botão** nas linhas, e **Contagem de eventos** nos valores. Ordene pela contagem decrescente.                                                           |
-| Origem das visitas e dispositivos | Use os relatórios de aquisição de tráfego e os detalhes de tecnologia.                                                                                                                                                                                   |
+Create these custom dimensions with **Event** scope under **Admin → Data display
+→ Custom definitions**:
 
-Para o ranking, primeiro crie estas **dimensões personalizadas**, todas com
-escopo **Evento**, em **Administrador → Exibição de dados → Definições
-personalizadas**:
+| Dimension         | Event parameter   |
+| ----------------- | ----------------- |
+| Button name       | `button_name`     |
+| Button location   | `button_location` |
+| Contact channel   | `contact_channel` |
+| Requested service | `service_name`    |
 
-| Nome da dimensão   | Parâmetro de evento |
-| ------------------ | ------------------- |
-| Nome do botão      | `button_name`       |
-| Local do botão     | `button_location`   |
-| Canal de contato   | `contact_channel`   |
-| Serviço solicitado | `service_name`      |
+In **Explore**, filter the event name to `button_click`, use button name and
+location as rows, and event count as the value. Sort by event count to rank
+controls. Contact links report the channel; service quote links report the
+service. A WhatsApp click indicates contact intent, not a sent message or sale.
 
-`button_click` registra links, botões e perguntas do FAQ, inclusive os controles
-de galeria e menu. O local distingue as seções (`inicio`, `servicos`, `contato`,
-etc.), `header`, `footer`, `menu-movel`, `dialog` e `whatsapp-flutuante`.
-Os links de contato também informam o canal; os orçamentos dos cartões informam
-o serviço. Um clique no WhatsApp indica intenção de contato, não comprova envio
-de mensagem nem venda. Mantenha os cliques de saída da Medição otimizada
-desativados também em propriedades existentes: o evento automático `click`
-inclui a URL de destino, enquanto `button_click` usa somente rótulos e contexto.
+Use date and total users for daily visitor reporting, average engagement time
+per session for active browsing time, and acquisition and technology reports for
+traffic sources and devices. User counts represent browser identities rather
+than an exact count of people.
 
-### Verificar a coleta
+### Verify collection
 
-Após publicar, abra o site sem bloqueador de anúncios, navegue e clique em
-alguns botões. Confira **Relatórios → Tempo real** no GA4 e procure
-`page_view` e `button_click`. Para inspecionar parâmetros, use o
-[Google Tag Assistant](https://tagassistant.google.com/) e o **DebugView**.
-Os relatórios processados e dimensões personalizadas podem levar 24–48 horas
-para aparecer. Sem o ID real e acesso à propriedade, a coleta não pode ser
-confirmada apenas pelo build.
+After deployment, open the site without an ad blocker, navigate and click some
+controls. Check **Reports → Realtime** for `page_view` and `button_click`. Use
+[Google Tag Assistant](https://tagassistant.google.com/) and **DebugView** to
+inspect parameters. Processed reports and custom dimensions may take 24–48 hours
+to appear. A successful build alone cannot confirm collection in the property.
 
-O GA4 usa cookies e sua cobertura depende dos bloqueadores e das escolhas dos
-visitantes. Esta integração desativa Google Signals e personalização de anúncios;
-não inclui uma interface de consentimento. Com Global Privacy Control ou Do Not
-Track ativado no navegador, o script não é carregado e os cliques não são coletados.
-A URL enviada ao GA4 não inclui parâmetros de consulta nem fragmentos; a origem
-de referência é enviada sem caminho, consulta ou fragmento. Isso também remove
-parâmetros de campanha da URL enviada. Os parâmetros personalizados contêm somente
-rótulos da interface e contexto, sem dados de formulários ou mensagens.
+The integration disables Google Signals and ad personalization. It does not load
+when Global Privacy Control or Do Not Track is enabled. GA4 uses cookies; this
+project does not include a consent interface.
 
-Referências: [configurar uma propriedade e fluxo Web](https://support.google.com/analytics/answer/14183469?hl=pt-BR),
-[tempo de engajamento](https://support.google.com/analytics/answer/11109416?hl=pt-BR),
-[dimensões personalizadas](https://support.google.com/analytics/answer/14240153?hl=pt-BR)
-e [medição otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR).
-
-## Deploying to S3 + CloudFront
-
-`next.config.ts` uses `output: "export"`, `trailingSlash: true` and
-`images.unoptimized: true`. The build writes everything to `out/`.
-
-### One-time setup
-
-1. Create a private S3 bucket (Block Public Access on). Static website hosting is
-   not needed.
-2. Create a CloudFront distribution with the bucket as origin using **Origin
-   Access Control (OAC)**, and apply the bucket policy CloudFront suggests.
-3. Distribution settings:
-   - Default root object: `index.html`.
-   - Viewer protocol policy: Redirect HTTP to HTTPS. Enable compression
-     (Brotli/Gzip) with the `CachingOptimized` policy.
-   - Custom error responses: 403 and 404 → `/404.html`, response code 404 (with
-     OAC, S3 answers 403 for missing keys).
-   - Attach the domain's ACM certificate (us-east-1) and alternate domain names.
-   - Optional: a response headers policy with security headers (HSTS,
-     `X-Content-Type-Options`, `Referrer-Policy`).
-4. Redirect the apex/`www` variant you don't use to the canonical `SITE_URL`.
-
-### Each release
-
-```sh
-SITE_URL=https://www.example.com.br npm run build
-
-# Fingerprinted assets (scripts, styles, photos): cache for a year.
-aws s3 sync out/_next/static s3://BUCKET/_next/static \
-  --cache-control "public, max-age=31536000, immutable"
-aws s3 sync out/images s3://BUCKET/images \
-  --cache-control "public, max-age=31536000, immutable"
-
-# Everything else (HTML, icons, OG image, robots, sitemap, manifest): revalidate.
-aws s3 sync out s3://BUCKET --delete \
-  --exclude "_next/static/*" --exclude "images/*" \
-  --cache-control "public, max-age=0, must-revalidate"
-
-aws cloudfront create-invalidation --distribution-id DIST_ID --paths "/*"
-```
-
-Upload the fingerprinted folders first so new HTML never references missing
-files. They are synced without `--delete`, so pages still cached by visitors
-keep working; prune old files occasionally if the bucket size matters.
-
-The site is a single page, so CloudFront's default root object is the only
-`index.html` lookup needed. If you add routes later, also add a CloudFront
-Function that rewrites `/path/` to `/path/index.html`.
-
-## Dependency notes
-
-- `npm audit` reports development-only findings through `eslint-config-next`
-  (`braces`, [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm),
-  currently without a patched release). These tools process repository patterns
-  during linting and are not shipped in the static website. Do not downgrade
-  Next.js to apply npm's suggested fix. Re-check when updating.
-- Sharp uses the patched `0.35.5` release or newer; its generated image
-  cache version changes with encoder upgrades so existing photos are rebuilt.
-- `serve` (used by `npm run preview`) has a scoped `compression` override; remove
-  it once `serve` ships the patched dependency.
-- Some bundled lint plugins still declare ESLint 9 peer ranges, so npm prints
-  peer warnings on install; linting works as configured.
-
-After `npm run build`, run `npm run check:export` to verify the actual exported
-HTML: local assets and anchor targets, photo descriptions and dimensions,
-canonical/sitemap/social URLs, error-page indexing and accidental source-map or
-private build-file exposure. It derives the hosting sub-path from the exported
-manifest and also supports builds with an empty `SITE_URL`. CI runs this check
-before uploading the deployment artifact.
+Page URLs sent to GA4 exclude query parameters and fragments, including campaign
+parameters. Referrers include only the origin. Keep Enhanced measurement
+outbound clicks disabled, including in existing properties, because its automatic
+`click` event includes destination URLs.
 
 ## References
 
 - [Next.js static exports](https://nextjs.org/docs/app/guides/static-exports)
-- [CloudFront Origin Access Control](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com/docs)
+- [CloudFront Origin Access Control](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
+- [GA4 property and web stream setup](https://support.google.com/analytics/answer/14183469?hl=en)
+- [GA4 engagement time](https://support.google.com/analytics/answer/11109416?hl=en)
+- [GA4 custom dimensions](https://support.google.com/analytics/answer/14240153?hl=en)
+- [GA4 enhanced measurement](https://support.google.com/analytics/answer/9216061?hl=en)
