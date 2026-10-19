@@ -27,8 +27,9 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
     if (!enabled) return;
     const analyticsWindow = window as AnalyticsWindow;
     analyticsWindow.dataLayer ??= [];
-    analyticsWindow.gtag ??= (...args: unknown[]) => {
-      analyticsWindow.dataLayer!.push(args);
+    analyticsWindow.gtag ??= function () {
+      // eslint-disable-next-line prefer-rest-params -- gtag.js requires Arguments command objects.
+      analyticsWindow.dataLayer!.push(arguments);
     };
 
     // React Strict Mode may run the effect twice; configure only once.
