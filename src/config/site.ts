@@ -32,7 +32,7 @@ export const site = {
   serviceRegion:
     "Piracicaba e região.\nConsulte a disponibilidade para outras cidades.",
   /** Real opening hours; line breaks are preserved. */
-  businessHours: "08:00 às 17:00",
+  businessHours: "08:00 às 17:00 de Segunda a Sexta",
 } as const;
 
 export const EMAIL_PLACEHOLDER = "contato@jfoxicorte.example";
